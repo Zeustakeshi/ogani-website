@@ -12,8 +12,6 @@ interface TopRatedProductsProps {
     items?: ProductItem[];
 }
 
-const getSliderGroups = (items: ProductItem[]) => [items, items];
-
 const TopRatedProducts: React.FC<TopRatedProductsProps> = ({
     title = "Top Rated Products",
     items = [
@@ -41,32 +39,24 @@ const TopRatedProducts: React.FC<TopRatedProductsProps> = ({
         <div className="col-lg-4 col-md-6">
             <div className="latest-product__text">
                 <h4>{title}</h4>
-                <div className="latest-product__slider owl-carousel">
-                    {getSliderGroups(items).map((group, groupIndex) => (
-                        <div
-                            key={`${title}-${groupIndex}`}
-                            className="latest-prdouct__slider__item"
-                        >
-                            {group.map((item) => (
-                                <a
-                                    key={item.id}
-                                    href="#"
-                                    className="latest-product__item"
-                                >
-                                    <div className="latest-product__item__pic">
-                                        <img
-                                            src={item.image}
-                                            alt={item.title}
-                                        />
-                                    </div>
-                                    <div className="latest-product__item__text">
-                                        <h6>{item.title}</h6>
-                                        <span>{item.price}</span>
-                                    </div>
-                                </a>
-                            ))}
-                        </div>
-                    ))}
+                <div className="latest-product__slider">
+                    <div className="latest-prdouct__slider__item">
+                        {items.map((item) => (
+                            <a
+                                key={item.id}
+                                href="#"
+                                className="latest-product__item"
+                            >
+                                <div className="latest-product__item__pic">
+                                    <img src={item.image} alt={item.title} />
+                                </div>
+                                <div className="latest-product__item__text">
+                                    <h6>{item.title}</h6>
+                                    <span>{item.price}</span>
+                                </div>
+                            </a>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
