@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { PATHS } from "@/router/paths";
 
 interface TopBarProps {}
 
@@ -21,7 +23,7 @@ const TopBar: React.FC<TopBarProps> = (props) => {
                                 </ul>
                             </div>
                             <div className="topbar__login">
-                                <a href="#">Login</a>
+                                <Link to={PATHS.LOGIN}>Login</Link>
                             </div>
                         </div>
                     </div>
@@ -71,7 +73,7 @@ const TopBar: React.FC<TopBarProps> = (props) => {
                             </ul>
                         </div>
                         <div className="topbar__login">
-                            <a href="#">Login</a>
+                            <Link to={PATHS.LOGIN}>Login</Link>
                         </div>
                     </div>
                     <div className="col-lg-6 col-md-6">

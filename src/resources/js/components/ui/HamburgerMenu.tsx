@@ -1,5 +1,6 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { PATHS } from "@/router/paths";
 
 interface HamburgerMenuProps {
     isOpen?: boolean;
@@ -49,9 +50,9 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose }) => {
                         </ul>
                     </div>
                     <div className="header__top__right__auth">
-                        <a href="#">
+                        <Link to={PATHS.LOGIN} onClick={onClose}>
                             <i className="fa fa-user"></i> Login
-                        </a>
+                        </Link>
                     </div>
                 </div>
                 <nav className="humberger__menu__nav mobile-menu">

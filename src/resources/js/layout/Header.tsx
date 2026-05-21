@@ -1,5 +1,6 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { PATHS } from "@/router/paths";
 
 interface HeaderProps {}
 
@@ -51,9 +52,9 @@ const Header: React.FC<HeaderProps> = () => {
                                     </ul>
                                 </div>
                                 <div className="header__top__right__auth">
-                                    <a href="#">
+                                    <Link to={PATHS.LOGIN}>
                                         <i className="fa fa-user"></i> Login
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

@@ -6,6 +6,9 @@ import ShopPage from "../pages/ShopPage";
 import ProductDetailPage from "../pages/ProductDetailPage";
 import CartPage from "../pages/CartPage";
 import CheckoutPage from "../pages/CheckoutPage";
+import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import { PATHS } from "./paths";
 
 const routes = [
@@ -23,6 +26,15 @@ const routes = [
             {
                 path: PATHS.CHECKOUT.replace(/^\//, ""),
                 element: <CheckoutPage />,
+            },
+            { path: PATHS.LOGIN.replace(/^\//, ""), element: <LoginPage /> },
+            {
+                path: PATHS.REGISTER.replace(/^\//, ""),
+                element: <RegisterPage />,
+            },
+            {
+                path: PATHS.FORGOT_PASSWORD.replace(/^\//, ""),
+                element: <ForgotPasswordPage />,
             },
             { path: "*", element: <Navigate to={PATHS.HOME} replace /> },
         ],
