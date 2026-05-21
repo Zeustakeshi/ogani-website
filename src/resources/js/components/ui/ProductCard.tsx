@@ -22,7 +22,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <div className="product__item__pic set-bg" data-setbg={image}>
                 {onSale && (
                     <div className="sale__icon">
-                        <img src="img/sale-icon.png" alt="Sale" />
+                        <img src="/img/sale-icon.png" alt="Sale" />
                     </div>
                 )}
                 <ul className="product__item__pic__hover">

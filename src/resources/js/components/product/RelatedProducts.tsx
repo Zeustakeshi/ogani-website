@@ -16,32 +16,32 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
     products = [
         {
             id: 1,
-            image: "img/product/discount/pd-1.jpg",
+            image: "/img/product/product-1.jpg",
             title: "Crab Pool Security",
             price: "$30.00",
         },
         {
             id: 2,
-            image: "img/product/discount/pd-2.jpg",
+            image: "/img/product/product-2.jpg",
             title: "Crab Pool Security",
             price: "$30.00",
         },
         {
             id: 3,
-            image: "img/product/discount/pd-3.jpg",
+            image: "/img/product/product-3.jpg",
             title: "Crab Pool Security",
             price: "$30.00",
         },
         {
             id: 4,
-            image: "img/product/discount/pd-4.jpg",
+            image: "/img/product/product-7.jpg",
             title: "Crab Pool Security",
             price: "$30.00",
         },
     ],
 }) => {
     return (
-        <section className="related-product spad">
+        <section className="related-product">
             <div className="container">
                 <div className="row">
                     <div className="col-lg-12">
