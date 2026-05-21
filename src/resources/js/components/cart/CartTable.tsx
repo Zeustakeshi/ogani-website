@@ -19,15 +19,15 @@ const CartTable: React.FC<CartTableProps> = ({
     items = [
         {
             id: 1,
-            image: "img/cart/cart-1.jpg",
-            title: "Vegetable's Package",
+            image: "/img/cart/cart-1.jpg",
+            title: "Vegetable’s Package",
             price: 55.0,
             quantity: 1,
             total: 110.0,
         },
         {
             id: 2,
-            image: "img/cart/cart-2.jpg",
+            image: "/img/cart/cart-2.jpg",
             title: "Fresh Garden Vegetable",
             price: 39.0,
             quantity: 1,
@@ -35,7 +35,7 @@ const CartTable: React.FC<CartTableProps> = ({
         },
         {
             id: 3,
-            image: "img/cart/cart-3.jpg",
+            image: "/img/cart/cart-3.jpg",
             title: "Organic Bananas",
             price: 69.0,
             quantity: 1,
@@ -46,11 +46,11 @@ const CartTable: React.FC<CartTableProps> = ({
     onRemove,
 }) => {
     return (
-        <div className="cart__table">
+        <div className="shoping__cart__table">
             <table>
                 <thead>
                     <tr>
-                        <th>Products</th>
+                        <th className="shoping__product">Products</th>
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Total</th>
@@ -60,29 +60,39 @@ const CartTable: React.FC<CartTableProps> = ({
                 <tbody>
                     {items.map((item) => (
                         <tr key={item.id}>
-                            <td className="cart__product__item">
+                            <td className="shoping__cart__item">
                                 <img src={item.image} alt={item.title} />
-                                <div className="cart__product__item__title">
-                                    <h6>{item.title}</h6>
-                                </div>
+                                <h5>{item.title}</h5>
                             </td>
-                            <td className="cart__price">
+                            <td className="shoping__cart__price">
                                 ${item.price.toFixed(2)}
                             </td>
-                            <td className="cart__quantity">
+                            <td className="shoping__cart__quantity">
                                 <div className="quantity">
                                     <div className="pro-qty">
                                         <input
                                             type="text"
                                             defaultValue={item.quantity}
+                                            onChange={(e) => {
+                                                const quantity = Number(
+                                                    e.target.value,
+                                                );
+
+                                                if (!Number.isNaN(quantity)) {
+                                                    onQuantityChange?.(
+                                                        item.id,
+                                                        quantity,
+                                                    );
+                                                }
+                                            }}
                                         />
                                     </div>
                                 </div>
                             </td>
-                            <td className="cart__total">
+                            <td className="shoping__cart__total">
                                 ${item.total.toFixed(2)}
                             </td>
-                            <td className="cart__close">
+                            <td className="shoping__cart__item__close">
                                 <span
                                     className="icon_close"
                                     onClick={() => onRemove?.(item.id)}

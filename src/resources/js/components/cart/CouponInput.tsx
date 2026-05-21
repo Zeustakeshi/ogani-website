@@ -14,12 +14,12 @@ const CouponInput: React.FC<CouponInputProps> = ({ onApply }) => {
     };
 
     return (
-        <div className="coupon__code">
+        <div className="shoping__discount">
             <h6>Discount Codes</h6>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Enter your coupon"
+                    placeholder="Enter your coupon code"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                 />
