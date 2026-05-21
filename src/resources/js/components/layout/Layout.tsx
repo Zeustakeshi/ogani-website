@@ -1,33 +1,21 @@
-import React from "react";
-import { Outlet, NavLink } from "react-router-dom";
-import { PATHS } from "../../router/paths";
+import Footer from "@/layout/Footer";
+import Header from "@/layout/Header";
+import NavigationMenu from "@/layout/NavigationMenu";
+import TopBar from "@/layout/TopBar";
+import { Outlet } from "react-router-dom";
 
 export default function Layout() {
     return (
         <>
-            <header className="site-header">
-                <nav>
-                    <ul className="nav-list">
-                        <li>
-                            <NavLink to={PATHS.HOME} end>
-                                Home
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={PATHS.SHOP}>Shop</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to={PATHS.CART}>Cart</NavLink>
-                        </li>
-                    </ul>
-                </nav>
-            </header>
+            <TopBar />
+            <Header />
+            <NavigationMenu />
+
             <main className="site-main">
                 <Outlet />
             </main>
-            <footer className="site-footer">
-                <small>© {new Date().getFullYear()} My App</small>
-            </footer>
+
+            <Footer />
         </>
     );
 }

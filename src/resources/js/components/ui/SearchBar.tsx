@@ -1,13 +1,19 @@
-import React from 'react';
+import React from "react";
 
 interface SearchBarProps {}
 
-const SearchBar: React.FC<SearchBarProps> = (props) => {
-  return (
-    <div className="searchbar-component">
-      {/* TODO: Implement SearchBar */}
-    </div>
-  );
+const SearchBar: React.FC<SearchBarProps> = () => {
+    return (
+        <div className="header__search">
+            <form action="#">
+                <input type="text" placeholder="All Categories" />
+                <input type="text" placeholder="SEARCH" />
+                <button type="submit">
+                    <span className="icon_search"></span>
+                </button>
+            </form>
+        </div>
+    );
 };
 
 export default SearchBar;
