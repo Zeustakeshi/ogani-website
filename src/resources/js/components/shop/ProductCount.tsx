@@ -1,13 +1,21 @@
-import React from 'react';
+import React from "react";
 
-interface ProductCountProps {}
+interface ProductCountProps {
+    count?: number;
+    text?: string;
+}
 
-const ProductCount: React.FC<ProductCountProps> = (props) => {
-  return (
-    <div className="productcount-component">
-      {/* TODO: Implement ProductCount */}
-    </div>
-  );
+const ProductCount: React.FC<ProductCountProps> = ({
+    count = 16,
+    text = "Products found",
+}) => {
+    return (
+        <div className="filter__found">
+            <h6>
+                <span>{count}</span> {text}
+            </h6>
+        </div>
+    );
 };
 
 export default ProductCount;
