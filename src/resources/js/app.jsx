@@ -1,6 +1,7 @@
 import "./bootstrap";
 import React from "react";
 import { createRoot } from "react-dom/client";
+import Button from "./components/ui/Button";
 
 const TodoList = () => {
     return <h1>xin chao cac ban </h1>;
@@ -19,6 +20,7 @@ const App = () => {
         <h1>
             Laravel 11 + React + Vite 🚀
             <HelloCard></HelloCard>
+            <Button></Button>
             <TodoList />
             <TodoList2></TodoList2>
         </h1>
