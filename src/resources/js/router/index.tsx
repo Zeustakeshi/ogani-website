@@ -7,7 +7,7 @@ import ProductDetailPage from "../pages/ProductDetailPage";
 import CartPage from "../pages/CartPage";
 import CheckoutPage from "../pages/CheckoutPage";
 import LoginPage from "../pages/LoginPage";
-import RegisterPage from "../pages/RegisterPage";
+import Register from "../pages/RegisterPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import { PATHS } from "./paths";
 
@@ -30,7 +30,7 @@ const routes = [
             { path: PATHS.LOGIN.replace(/^\//, ""), element: <LoginPage /> },
             {
                 path: PATHS.REGISTER.replace(/^\//, ""),
-                element: <RegisterPage />,
+                element: <Register />,
             },
             {
                 path: PATHS.FORGOT_PASSWORD.replace(/^\//, ""),

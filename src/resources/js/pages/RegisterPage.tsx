@@ -1,15 +1,94 @@
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import React from "react";
-import { Link } from "react-router-dom";
+import authService from "@/services/authService";
+import { useAuth } from "@/context/AuthContext";
+import React, { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { PATHS } from "@/router/paths";
+import "./auth/Register.css";
 
-interface RegisterPageProps {}
+type RegisterFormData = {
+    username: string;
+    email: string;
+    phone: string;
+    password: string;
+    password_confirmation: string;
+};
 
-const RegisterPage: React.FC<RegisterPageProps> = () => {
+type RegisterErrors = Partial<Record<keyof RegisterFormData, string>>;
+
+const initialFormData: RegisterFormData = {
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+    password_confirmation: "",
+};
+
+export default function RegisterPage() {
+    const navigate = useNavigate();
+    const { setAuth } = useAuth();
+    const [formData, setFormData] = useState<RegisterFormData>(initialFormData);
+    const [errors, setErrors] = useState<RegisterErrors>({});
+    const [submitError, setSubmitError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const breadcrumbItems = [
         { label: "Home", path: PATHS.HOME },
         { label: "Register" },
     ];
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        const { name, value } = event.target;
+
+        setFormData((current) => ({
+            ...current,
+            [name]: value,
+        }));
+
+        setErrors((current) => ({
+            ...current,
+            [name]: undefined,
+        }));
+    };
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+        setSubmitError("");
+        setErrors({});
+
+        try {
+            const response = await authService.register(formData);
+            const token = response?.data?.token;
+            const user = response?.data?.user;
+
+            if (user) {
+                setAuth(user);
+            }
+
+            navigate(PATHS.HOME, { replace: true });
+        } catch (error: any) {
+            if (error?.response?.status === 422) {
+                const serverErrors = error?.response?.data?.errors ?? {};
+
+                setErrors({
+                    username: serverErrors.username?.[0],
+                    email: serverErrors.email?.[0],
+                    phone: serverErrors.phone?.[0],
+                    password: serverErrors.password?.[0],
+                    password_confirmation:
+                        serverErrors.password_confirmation?.[0],
+                });
+            } else {
+                setSubmitError(
+                    error?.response?.data?.message ||
+                        "Registration failed. Please try again.",
+                );
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <>
@@ -62,21 +141,29 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
                                         tài khoản mới.
                                     </p>
 
-                                    <form
-                                        onSubmit={(event) =>
-                                            event.preventDefault()
-                                        }
-                                    >
+                                    <form onSubmit={handleSubmit} noValidate>
                                         <div className="auth-page__field">
                                             <label htmlFor="register-username">
                                                 Tên người dùng
                                             </label>
                                             <input
                                                 id="register-username"
+                                                className={`register-page__input ${
+                                                    errors.username
+                                                        ? "is-invalid"
+                                                        : ""
+                                                }`}
                                                 name="username"
                                                 type="text"
                                                 placeholder="Nhập tên người dùng"
+                                                value={formData.username}
+                                                onChange={handleChange}
                                             />
+                                            {errors.username ? (
+                                                <div className="register-page__field-error">
+                                                    {errors.username}
+                                                </div>
+                                            ) : null}
                                         </div>
 
                                         <div className="auth-page__field">
@@ -85,10 +172,22 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
                                             </label>
                                             <input
                                                 id="register-email"
+                                                className={`register-page__input ${
+                                                    errors.email
+                                                        ? "is-invalid"
+                                                        : ""
+                                                }`}
                                                 name="email"
                                                 type="email"
                                                 placeholder="Nhập địa chỉ email"
+                                                value={formData.email}
+                                                onChange={handleChange}
                                             />
+                                            {errors.email ? (
+                                                <div className="register-page__field-error">
+                                                    {errors.email}
+                                                </div>
+                                            ) : null}
                                         </div>
 
                                         <div className="auth-page__field">
@@ -97,10 +196,22 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
                                             </label>
                                             <input
                                                 id="register-phone"
+                                                className={`register-page__input ${
+                                                    errors.phone
+                                                        ? "is-invalid"
+                                                        : ""
+                                                }`}
                                                 name="phone"
                                                 type="tel"
                                                 placeholder="Nhập số điện thoại"
+                                                value={formData.phone}
+                                                onChange={handleChange}
                                             />
+                                            {errors.phone ? (
+                                                <div className="register-page__field-error">
+                                                    {errors.phone}
+                                                </div>
+                                            ) : null}
                                         </div>
 
                                         <div className="auth-page__field">
@@ -109,10 +220,22 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
                                             </label>
                                             <input
                                                 id="register-password"
+                                                className={`register-page__input ${
+                                                    errors.password
+                                                        ? "is-invalid"
+                                                        : ""
+                                                }`}
                                                 name="password"
                                                 type="password"
                                                 placeholder="Nhập mật khẩu"
+                                                value={formData.password}
+                                                onChange={handleChange}
                                             />
+                                            {errors.password ? (
+                                                <div className="register-page__field-error">
+                                                    {errors.password}
+                                                </div>
+                                            ) : null}
                                         </div>
 
                                         <div className="auth-page__field">
@@ -121,17 +244,42 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
                                             </label>
                                             <input
                                                 id="register-password-confirm"
-                                                name="passwordConfirmation"
+                                                className={`register-page__input ${
+                                                    errors.password_confirmation
+                                                        ? "is-invalid"
+                                                        : ""
+                                                }`}
+                                                name="password_confirmation"
                                                 type="password"
                                                 placeholder="Nhập lại mật khẩu"
+                                                value={
+                                                    formData.password_confirmation
+                                                }
+                                                onChange={handleChange}
                                             />
+                                            {errors.password_confirmation ? (
+                                                <div className="register-page__field-error">
+                                                    {
+                                                        errors.password_confirmation
+                                                    }
+                                                </div>
+                                            ) : null}
                                         </div>
+
+                                        {submitError ? (
+                                            <div className="register-page__alert">
+                                                {submitError}
+                                            </div>
+                                        ) : null}
 
                                         <button
                                             type="submit"
-                                            className="site-btn auth-page__submit"
+                                            className="site-btn auth-page__submit register-page__submit"
+                                            disabled={isSubmitting}
                                         >
-                                            Tạo tài khoản
+                                            {isSubmitting
+                                                ? "Đang xử lý..."
+                                                : "Tạo tài khoản"}
                                         </button>
                                     </form>
 
@@ -147,6 +295,4 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
             </section>
         </>
     );
-};
-
-export default RegisterPage;
+}

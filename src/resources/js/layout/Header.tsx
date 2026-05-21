@@ -1,10 +1,13 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { PATHS } from "@/router/paths";
+import { useAuth } from "@/context/AuthContext";
 
 interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
+    const { user, logout } = useAuth();
+
     return (
         <header className="header">
             {/* Header Top */}
@@ -52,9 +55,33 @@ const Header: React.FC<HeaderProps> = () => {
                                     </ul>
                                 </div>
                                 <div className="header__top__right__auth">
-                                    <Link to={PATHS.LOGIN}>
-                                        <i className="fa fa-user"></i> Login
-                                    </Link>
+                                    {user ? (
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyItems: "center",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Link to={PATHS.PROFILE || "#"}>
+                                                <i className="fa fa-user"></i>{" "}
+                                                {user.username}
+                                            </Link>
+                                            <button
+                                                onClick={async (e) => {
+                                                    e.preventDefault();
+                                                    await logout();
+                                                }}
+                                                className="ml-3 btn btn-link"
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <Link to={PATHS.LOGIN}>
+                                            <i className="fa fa-user"></i> Login
+                                        </Link>
+                                    )}
                                 </div>
                             </div>
                         </div>
