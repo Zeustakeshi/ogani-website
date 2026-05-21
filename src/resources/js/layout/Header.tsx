@@ -1,149 +1,153 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 interface HeaderProps {}
 
-const Header: React.FC<HeaderProps> = (props) => {
+const Header: React.FC<HeaderProps> = () => {
     return (
-        <div className="header-component">
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-3">
-                        <div className="header__logo">
-                            <a href="./index.html">
-                                <h2>Ogani | Template</h2>
-                            </a>
+        <header className="header">
+            {/* Header Top */}
+            <div className="header__top">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-6 col-md-6">
+                            <div className="header__top__left">
+                                <ul>
+                                    <li>
+                                        <i className="fa fa-envelope"></i>{" "}
+                                        hello@colorlib.com
+                                    </li>
+                                    <li>Free Shipping for all Order of $99</li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-lg-6">
-                        <nav className="header__menu">
-                            <ul>
-                                <li>
-                                    <a href="./index.html">Home</a>
-                                </li>
-                                <li>
-                                    <a href="./shop-grid.html">Shop</a>
-                                </li>
-                                <li className="dropdown">
-                                    <a href="#">Pages</a>
-                                    <ul className="dropdown-menu">
+                        <div className="col-lg-6 col-md-6">
+                            <div className="header__top__right">
+                                <div className="header__top__right__social">
+                                    <a href="#">
+                                        <i className="fa fa-facebook"></i>
+                                    </a>
+                                    <a href="#">
+                                        <i className="fa fa-twitter"></i>
+                                    </a>
+                                    <a href="#">
+                                        <i className="fa fa-linkedin"></i>
+                                    </a>
+                                    <a href="#">
+                                        <i className="fa fa-pinterest-p"></i>
+                                    </a>
+                                </div>
+                                <div className="header__top__right__language">
+                                    <img src="img/language.png" alt="" />
+                                    <div>English</div>
+                                    <span className="arrow_carrot-down"></span>
+                                    <ul>
                                         <li>
-                                            <a href="./shop-details.html">
-                                                Shop Details
-                                            </a>
+                                            <a href="#">Spanis</a>
                                         </li>
                                         <li>
-                                            <a href="./shoping-cart.html">
-                                                Shoping Cart
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="./checkout.html">
-                                                Check Out
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="./blog-details.html">
-                                                Blog Details
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="./blog.html">Blog</a>
+                                            <a href="#">English</a>
                                         </li>
                                     </ul>
-                                </li>
-                                <li>
-                                    <a href="./contact.html">Contact</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                    <div className="col-lg-3">
-                        <div className="header__cart">
-                            <a href="#">
-                                <span className="icon_bag_alt"></span>
-                                <sup>1</sup>
-                            </a>
-                            <span>3 item: $150.00</span>
-                        </div>
-                    </div>
-                </div>
-                <div className="humberger__open">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-3">
-                        <div className="header__categories">
-                            <span className="icon_category"></span>
-                            All departments
-                            <ul className="categories__dropdown">
-                                <li>
-                                    <a href="#">Fresh Meat</a>
-                                </li>
-                                <li>
-                                    <a href="#">Vegetables</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fruit & Nut Gifts</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fresh Berries</a>
-                                </li>
-                                <li>
-                                    <a href="#">Ocean Foods</a>
-                                </li>
-                                <li>
-                                    <a href="#">Butter & Eggs</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fastfood</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fresh Onion</a>
-                                </li>
-                                <li>
-                                    <a href="#">Papayaya & Crisps</a>
-                                </li>
-                                <li>
-                                    <a href="#">Oatmeal</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fresh Bananas</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="col-lg-6">
-                        <div className="header__search">
-                            <form action="#">
-                                <input
-                                    type="text"
-                                    placeholder="All Categories"
-                                />
-                                <input type="text" placeholder="SEARCH" />
-                                <button type="submit">
-                                    <span className="icon_search"></span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    <div className="col-lg-3">
-                        <div className="header__contact__info">
-                            <div className="header__contact__phone">
-                                <span className="icon_phone"></span>
-                                <div>
-                                    <span>+65 11.188.888</span>
-                                    <p>support 24/7 time</p>
+                                </div>
+                                <div className="header__top__right__auth">
+                                    <a href="#">
+                                        <i className="fa fa-user"></i> Login
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            {/* Header Main */}
+            <div className="container">
+                <div className="row">
+                    {/* Logo */}
+                    <div className="col-lg-3">
+                        <div className="header__logo">
+                            <NavLink to="./index.html">
+                                <img src="img/logo.png" alt="" />
+                            </NavLink>
+                        </div>
+                    </div>
+
+                    {/* Navigation */}
+                    <div className="col-lg-6">
+                        <nav className="header__menu">
+                            <ul>
+                                <li className="active">
+                                    <NavLink to="/" end>
+                                        Home
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/shop">Shop</NavLink>
+                                </li>
+                                <li>
+                                    <a href="#">Pages</a>
+                                    <ul className="header__menu__dropdown">
+                                        <li>
+                                            <NavLink to="/shop-details">
+                                                Shop Details
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/cart">
+                                                Shoping Cart
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to="/checkout">
+                                                Check Out
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <a href="#">Blog Details</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <NavLink to="/blog">Blog</NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/contact">Contact</NavLink>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    {/* Cart */}
+                    <div className="col-lg-3">
+                        <div className="header__cart">
+                            <ul>
+                                <li>
+                                    <a href="#">
+                                        <i className="fa fa-heart"></i>{" "}
+                                        <span>1</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i className="fa fa-shopping-bag"></i>{" "}
+                                        <span>3</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div className="header__cart__price">
+                                item: <span>$150.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Hamburger Trigger */}
+                <div className="humberger__open">
+                    <i className="fa fa-bars"></i>
+                </div>
+            </div>
+        </header>
     );
 };
 

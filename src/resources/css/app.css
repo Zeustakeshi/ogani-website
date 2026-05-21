@@ -1,22 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Bootstrap */
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
-/* Basic layout styles used by React Layout component */
-.nav-list {
-	list-style: none;
-	display: flex;
-	gap: 1rem;
-	padding: 0;
-	margin: 0;
-}
-.site-header {
-	padding: 1rem 0;
-}
-.site-main {
-	padding: 2rem 0;
-}
-.site-footer {
-	padding: 1rem 0;
-	text-align: center;
-}
+/* Font Awesome */
+@import 'font-awesome/css/font-awesome.min.css';
+
+/* jQuery UI - import từng file cần dùng */
+@import 'jquery-ui/themes/base/core.css';
+@import 'jquery-ui/themes/base/theme.css';
+@import 'jquery-ui/themes/base/datepicker.css';
+@import 'jquery-ui/themes/base/slider.css';
+@import 'jquery-ui/themes/base/dialog.css';
+
+/* Nice Select */
+@import 'jquery-nice-select/css/nice-select.css';
+
+/* Owl Carousel */
+@import 'owl.carousel/dist/assets/owl.carousel.min.css';
+@import 'owl.carousel/dist/assets/owl.theme.default.min.css';
+
+/* SlickNav */
+@import 'slicknav/dist/slicknav.min.css';
+
+
+@import "./style.css"

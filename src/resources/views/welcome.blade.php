@@ -4,10 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Laravel</title>
-    @viteReactRefresh                          {{-- ← thêm dòng này --}}
-    @vite(['resources/js/main.tsx'])            {{-- ← thêm dòng này --}}
-</head>
+    @viteReactRefresh                          
+    @vite(['resources/css/app.css', 'resources/js/main.tsx'])
 <body>
-    <div id="root"></div>                      {{-- ← React mount vào đây --}}
+    <div id="root"></div>                     
 </body>
 </html>
