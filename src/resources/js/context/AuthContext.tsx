@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 type AuthUser = {
+    id: number | string | null;
     email: string;
     username: string;
     phone: string | null;
@@ -39,6 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 // UserResource returns data in `data` key or directly — handle both
                 const payload = data.data ?? data;
                 const u = {
+                    id: payload.id ?? null,
                     email: payload.email,
                     username: payload.username,
                     phone: payload.phone ?? null,
