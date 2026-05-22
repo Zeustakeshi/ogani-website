@@ -1,0 +1,290 @@
+/*---------------------
+  Admin Auth
+-----------------------*/
+
+.admin-auth-page {
+	display: grid;
+	grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+	min-height: 100vh;
+	background:
+		radial-gradient(circle at top left, rgba(127, 173, 57, 0.18), transparent 32%),
+		linear-gradient(135deg, #0f172a 0%, #111827 45%, #f7faf2 45%, #f7faf2 100%);
+}
+
+.admin-auth-page__panel {
+	position: relative;
+	padding: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.admin-auth-page__panel--visual {
+	color: #ffffff;
+	background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(17, 24, 39, 0.98));
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 32px;
+}
+
+.admin-auth-page__eyebrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: rgba(127, 173, 57, 0.18);
+	border: 1px solid rgba(127, 173, 57, 0.28);
+	color: #d7f0b2;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	margin-bottom: 18px;
+}
+
+.admin-auth-page__eyebrow--muted {
+	background: rgba(127, 173, 57, 0.12);
+	color: #7fad39;
+	border-color: rgba(127, 173, 57, 0.2);
+}
+
+.admin-auth-page__panel--visual h1 {
+	font-size: clamp(40px, 5vw, 72px);
+	line-height: 1.02;
+	font-weight: 700;
+	color: #ffffff;
+	max-width: 10ch;
+	margin-bottom: 18px;
+}
+
+.admin-auth-page__panel--visual p {
+	max-width: 540px;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 17px;
+	line-height: 30px;
+	margin-bottom: 0;
+}
+
+.admin-auth-page__stats {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	width: 100%;
+	max-width: 780px;
+}
+
+.admin-auth-page__stat {
+	background: rgba(255, 255, 255, 0.06);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	backdrop-filter: blur(12px);
+	border-radius: 20px;
+	padding: 20px;
+	min-height: 170px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+
+.admin-auth-page__stat span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 12px;
+	background: rgba(127, 173, 57, 0.18);
+	color: #d7f0b2;
+	font-weight: 800;
+	margin-bottom: 18px;
+}
+
+.admin-auth-page__stat strong {
+	font-size: 18px;
+	font-weight: 700;
+	color: #ffffff;
+	margin-bottom: 8px;
+}
+
+.admin-auth-page__stat small {
+	font-size: 14px;
+	line-height: 22px;
+	color: rgba(255, 255, 255, 0.72);
+}
+
+.admin-auth-page__panel--form {
+	background: linear-gradient(180deg, #f7faf2 0%, #eef3e4 100%);
+}
+
+.admin-auth-page__card {
+	width: 100%;
+	max-width: 560px;
+	background: rgba(255, 255, 255, 0.96);
+	border: 1px solid rgba(28, 28, 28, 0.06);
+	border-radius: 28px;
+	padding: 44px;
+	box-shadow: 0 24px 60px rgba(28, 28, 28, 0.12);
+}
+
+.admin-auth-page__card h2 {
+	font-size: 34px;
+	font-weight: 700;
+	color: #1c1c1c;
+	margin-bottom: 10px;
+}
+
+.admin-auth-page__card p {
+	font-size: 16px;
+	margin-bottom: 28px;
+}
+
+.admin-auth-page__field {
+	margin-bottom: 20px;
+}
+
+.admin-auth-page__field label {
+	display: block;
+	font-size: 14px;
+	font-weight: 700;
+	color: #1c1c1c;
+	margin-bottom: 10px;
+}
+
+.admin-auth-page__field input {
+	width: 100%;
+	height: 54px;
+	border: 1px solid #dfe7d2;
+	border-radius: 14px;
+	padding: 0 18px;
+	font-size: 15px;
+	color: #1c1c1c;
+	background: #ffffff;
+	-webkit-transition: border-color 0.2s ease, -webkit-box-shadow 0.2s ease;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-auth-page__field input:focus {
+	border-color: #7fad39;
+	-webkit-box-shadow: 0 0 0 4px rgba(127, 173, 57, 0.12);
+	box-shadow: 0 0 0 4px rgba(127, 173, 57, 0.12);
+}
+
+.admin-auth-page__error {
+	margin-top: 8px;
+	font-size: 13px;
+	font-weight: 700;
+	color: #c62828;
+}
+
+.admin-auth-page__alert {
+	margin-bottom: 18px;
+	padding: 14px 16px;
+	border-radius: 14px;
+	background: rgba(198, 40, 40, 0.08);
+	color: #9b1d1d;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.admin-auth-page__submit {
+	width: 100%;
+	height: 54px;
+	border: none;
+	border-radius: 14px;
+	background: linear-gradient(135deg, #7fad39, #5f8a2a);
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: 800;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	box-shadow: 0 18px 30px rgba(127, 173, 57, 0.22);
+	-webkit-transition: transform 0.2s ease, box-shadow 0.2s ease;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-auth-page__submit:hover:not([disabled]) {
+	transform: translateY(-1px);
+	box-shadow: 0 22px 36px rgba(127, 173, 57, 0.26);
+}
+
+.admin-auth-page__submit:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.admin-dashboard-page {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px;
+	background: radial-gradient(circle at top, rgba(127, 173, 57, 0.18), transparent 28%), linear-gradient(180deg, #0f172a 0%, #111827 100%);
+}
+
+.admin-dashboard-page__card {
+	width: 100%;
+	max-width: 760px;
+	padding: 48px;
+	border-radius: 28px;
+	background: rgba(255, 255, 255, 0.96);
+	box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+	border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.admin-dashboard-page__eyebrow {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: #7fad39;
+	margin-bottom: 14px;
+}
+
+.admin-dashboard-page__card h1 {
+	font-size: 40px;
+	font-weight: 700;
+	color: #1c1c1c;
+	margin-bottom: 12px;
+}
+
+.admin-dashboard-page__card p {
+	font-size: 17px;
+	margin-bottom: 0;
+}
+
+@media only screen and (max-width: 991px) {
+	.admin-auth-page {
+		grid-template-columns: 1fr;
+	}
+
+	.admin-auth-page__stats {
+		grid-template-columns: 1fr;
+	}
+
+	.admin-auth-page__panel,
+	.admin-dashboard-page {
+		padding: 28px;
+	}
+
+	.admin-auth-page__card,
+	.admin-dashboard-page__card {
+		padding: 32px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.admin-auth-page__panel {
+		padding: 24px;
+	}
+
+	.admin-auth-page__panel--visual h1 {
+		max-width: none;
+	}
+
+	.admin-dashboard-page__card h1 {
+		font-size: 30px;
+	}
+}
+

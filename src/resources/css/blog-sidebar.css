@@ -1,0 +1,45 @@
+/*---------------------
+  Blog Details Hero
+-----------------------*/
+
+.blog-details-hero {
+	height: 350px;
+	display: flex;
+	align-items: center;
+}
+
+.blog__details__hero__text {
+	text-align: center;
+}
+
+.blog__details__hero__text h2 {
+	font-size: 46px;
+	color: #ffffff;
+	font-weight: 700;
+	margin-bottom: 10px;
+}
+
+.blog__details__hero__text ul li {
+	font-size: 16px;
+	color: #ffffff;
+	list-style: none;
+	display: inline-block;
+	margin-right: 45px;
+	position: relative;
+}
+
+.blog__details__hero__text ul li:after {
+	position: absolute;
+	right: -26px;
+	top: 0;
+	content: "|";
+}
+
+.blog__details__hero__text ul li:last-child {
+	margin-right: 0;
+}
+
+.blog__details__hero__text ul li:last-child:after {
+	display: none;
+}
+

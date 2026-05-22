@@ -21,5 +21,28 @@
 /* SlickNav */
 @import 'slicknav/dist/slicknav.min.css';
 
+@import "./base.css";
+@import "./helper.css";
+@import "./header.css";
+@import "./hero.css";
+@import "./categories.css";
+@import "./featured.css";
+@import "./latest-product.css";
+@import "./from-blog.css";
+@import "./breadcrumb.css";
+@import "./shop-grid.css";
+@import "./product-details.css";
+@import "./related-product.css";
+@import "./shop-cart.css";
+@import "./checkout.css";
+@import "./blog.css";
+@import "./blog-sidebar.css";
+@import "./blog-details-hero.css";
+@import "./blog-details.css";
+@import "./footer.css";
+@import "./contact.css";
+@import "./contact-form.css";
+@import "./auth.css";
+@import "./admin-auth.css";
+@import "./responsive.css";
 
-@import "./style.css"
