@@ -2,24 +2,44 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface SortBarProps {
     options?: Array<{ label: string; value: string }>;
+    value?: string;
     onSortChange?: (value: string) => void;
 }
 
 const SortBar: React.FC<SortBarProps> = ({
     options = [
-        { label: "Default", value: "0" },
-        { label: "Default", value: "1" },
+        { label: "Default", value: "" },
+        { label: "Rating: High to Low", value: "rating_desc" },
+        { label: "Price: Low to High", value: "price_asc" },
+        { label: "Price: High to Low", value: "price_desc" },
     ],
+    value,
     onSortChange,
 }) => {
     const normalizedOptions = useMemo(
         () =>
-            options.length > 0 ? options : [{ label: "Default", value: "0" }],
+            options.length > 0 ? options : [{ label: "Default", value: "" }],
         [options],
     );
-    const [selected, setSelected] = useState(normalizedOptions[0].value);
+    const [selected, setSelected] = useState(
+        value ?? normalizedOptions[0].value,
+    );
     const [open, setOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (value !== undefined) {
+            setSelected(value);
+            return;
+        }
+
+        if (
+            normalizedOptions.length > 0 &&
+            !normalizedOptions.some((option) => option.value === selected)
+        ) {
+            setSelected(normalizedOptions[0].value);
+        }
+    }, [normalizedOptions, selected, value]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

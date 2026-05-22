@@ -275,6 +275,29 @@
 	color: #7fad39;
 }
 
+.filter__option .filter__apply {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 14px;
+	padding: 8px 16px;
+	border: 1px solid #7fad39;
+	background: #7fad39;
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	cursor: pointer;
+	transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.filter__option .filter__apply:hover {
+	background: #68912f;
+	border-color: #68912f;
+	transform: translateY(-1px);
+}
+
 .product__item {
 	margin-bottom: 50px;
 }

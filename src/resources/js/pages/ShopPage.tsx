@@ -5,7 +5,7 @@ import ShopSidebar from "@/components/shop/ShopSidebar";
 import SortBar from "@/components/shop/SortBar";
 import { PATHS } from "@/router/paths";
 import api from "@/services/api";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 type ShopProduct = {
@@ -25,7 +25,7 @@ type ProductListResponse = {
 };
 
 const ShopPage = () => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [products, setProducts] = useState<ShopProduct[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -35,6 +35,15 @@ const ShopPage = () => {
 
     const categoryId = searchParams.get("category_id");
     const searchTerm = searchParams.get("search");
+    const minPrice = searchParams.get("min_price");
+    const maxPrice = searchParams.get("max_price");
+    const minWeight = searchParams.get("min_weight");
+    const maxWeight = searchParams.get("max_weight");
+    const color = searchParams.get("color");
+    const size = searchParams.get("size");
+    const sort = searchParams.get("sort");
+    const queryString = searchParams.toString();
+    const previousQueryStringRef = useRef(queryString);
 
     const priceFormatter = useMemo(
         () =>
@@ -45,11 +54,15 @@ const ShopPage = () => {
     );
 
     useEffect(() => {
-        setCurrentPage(1);
-    }, [categoryId, searchTerm]);
-
-    useEffect(() => {
         let isActive = true;
+        const isQueryChanged = previousQueryStringRef.current !== queryString;
+        const pageToLoad = isQueryChanged ? 1 : currentPage;
+
+        if (isQueryChanged && currentPage !== 1) {
+            setCurrentPage(1);
+        }
+
+        previousQueryStringRef.current = queryString;
 
         (async () => {
             setIsLoading(true);
@@ -57,7 +70,7 @@ const ShopPage = () => {
 
             try {
                 const params: any = {
-                    page: currentPage,
+                    page: pageToLoad,
                     per_page: 9,
                 };
 
@@ -66,6 +79,27 @@ const ShopPage = () => {
                 }
                 if (searchTerm) {
                     params.search = searchTerm;
+                }
+                if (minPrice) {
+                    params.min_price = Number(minPrice);
+                }
+                if (maxPrice) {
+                    params.max_price = Number(maxPrice);
+                }
+                if (minWeight) {
+                    params.min_weight = Number(minWeight);
+                }
+                if (maxWeight) {
+                    params.max_weight = Number(maxWeight);
+                }
+                if (color) {
+                    params.color = color;
+                }
+                if (size) {
+                    params.size = size;
+                }
+                if (sort) {
+                    params.sort = sort;
                 }
 
                 const response = await api.get<ProductListResponse>(
@@ -102,7 +136,7 @@ const ShopPage = () => {
         return () => {
             isActive = false;
         };
-    }, [currentPage, categoryId, searchTerm]);
+    }, [currentPage, queryString]);
 
     const productItems = products.map((product) => ({
         id: product.id,
@@ -123,7 +157,18 @@ const ShopPage = () => {
                         <div className="filter__item">
                             <div className="row">
                                 <div className="col-lg-4 col-md-5">
-                                    <SortBar />
+                                    <SortBar
+                                        value={sort ?? ""}
+                                        onSortChange={(value) => {
+                                            const next = new URLSearchParams(
+                                                searchParams as any,
+                                            );
+                                            if (!value) next.delete("sort");
+                                            else next.set("sort", value);
+                                            next.delete("page");
+                                            setSearchParams(next);
+                                        }}
+                                    />
                                 </div>
                                 <div className="col-lg-4 col-md-4">
                                     <ProductCount count={totalCount} />

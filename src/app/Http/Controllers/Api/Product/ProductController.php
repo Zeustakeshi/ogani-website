@@ -13,6 +13,13 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+	private const SIZE_WEIGHT_RULES = [
+		'large' => ['min' => 5, 'max' => null],
+		'medium' => ['min' => 3, 'max' => 5],
+		'small' => ['min' => 1, 'max' => 3],
+		'tiny' => ['min' => null, 'max' => 1],
+	];
+
 	public function __construct(private ProductService $productService)
 	{
 	}
@@ -22,8 +29,23 @@ class ProductController extends Controller
 		$perPage = max(1, (int) $request->integer('per_page', $request->integer('limit', 12)));
 		$categoryId = $request->query('category_id');
 		$search = $request->query('search');
-		$sortBy = $request->query('sort_by');
+		$minPrice = $request->query('min_price');
+		$maxPrice = $request->query('max_price');
+		$minWeight = $request->query('min_weight');
+		$maxWeight = $request->query('max_weight');
+		$size = $request->query('size');
+		$sortBy = $request->query('sort_by', $request->query('sort'));
 		$order = strtolower($request->query('order', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+		if ($sortBy && str_contains($sortBy, '_')) {
+			[$sortField, $sortDirection] = array_pad(explode('_', $sortBy, 2), 2, null);
+			if ($sortField) {
+				$sortBy = $sortField;
+			}
+			if (in_array($sortDirection, ['asc', 'desc'], true)) {
+				$order = $sortDirection;
+			}
+		}
 
 		$query = Product::query();
 
@@ -32,8 +54,55 @@ class ProductController extends Controller
 		}
 
 		if ($search) {
-			$query->where('name', 'like', "%{$search}%")
-				->orWhere('description', 'like', "%{$search}%");
+			$query->where(function ($builder) use ($search): void {
+				$builder->where('name', 'like', "%{$search}%")
+					->orWhere('description', 'like', "%{$search}%");
+			});
+		}
+
+		if ($minPrice !== null && $minPrice !== '') {
+			$query->where('price', '>=', (int) $minPrice);
+		}
+
+		if ($maxPrice !== null && $maxPrice !== '') {
+			$query->where('price', '<=', (int) $maxPrice);
+		}
+
+		if ($minWeight !== null && $minWeight !== '') {
+			$query->where('weight', '>=', (float) $minWeight);
+		}
+
+		if ($maxWeight !== null && $maxWeight !== '') {
+			$query->where('weight', '<=', (float) $maxWeight);
+		}
+
+		if ($size) {
+			$selectedSizes = array_values(array_filter(array_map(
+				static fn (string $value): string => strtolower(trim($value)),
+				explode(',', $size),
+			)));
+
+			if ($selectedSizes !== []) {
+				$mins = array_map(
+					static fn (string $selectedSize): float => self::SIZE_WEIGHT_RULES[$selectedSize]['min'] ?? 0,
+					$selectedSizes,
+				);
+				$maxs = array_map(
+					static fn (string $selectedSize): float => self::SIZE_WEIGHT_RULES[$selectedSize]['max'] ?? INF,
+					$selectedSizes,
+				);
+
+				$overallMin = min($mins);
+				$overallMax = max($maxs);
+
+				if ($overallMin !== null) {
+					$query->where('weight', '>=', $overallMin);
+				}
+
+				if ($overallMax !== INF) {
+					$query->where('weight', '<=', $overallMax);
+				}
+			}
 		}
 
 		$allowedSorts = ['rating', 'price', 'created_at', 'name'];
@@ -45,6 +114,8 @@ class ProductController extends Controller
 				} else {
 					$query->orderBy('rating', 'asc')->orderBy('reviews', 'asc');
 				}
+			} elseif ($sortBy === 'price') {
+				$query->orderBy('price', $order);
 			} else {
 				$query->orderBy($sortBy, $order);
 			}
