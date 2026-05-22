@@ -65,13 +65,14 @@ export default function AdminLoginPage() {
             });
 
             const loggedInUser = response?.data?.user;
+            const token = response?.data?.token;
 
             if (!loggedInUser || loggedInUser.role !== "admin") {
                 setSubmitError("Tài khoản này không có quyền admin.");
                 return;
             }
 
-            setAuth(loggedInUser as any);
+            setAuth(loggedInUser as any, token);
             navigate(PATHS.ADMIN, { replace: true });
         } catch (error: any) {
             if (error?.response?.status === 422) {

@@ -50,7 +50,7 @@ export default function AdminProductsPage() {
                     {
                         params: {
                             page: currentPage,
-                            per_page: 10,
+                            per_page: 6,
                         },
                     },
                 );
@@ -87,9 +87,6 @@ export default function AdminProductsPage() {
         <section className="admin-page">
             <div className="admin-page__header">
                 <div>
-                    <span className="admin-page__eyebrow">
-                        Quản lý sản phẩm
-                    </span>
                     <h1>Sản phẩm</h1>
                     <p>Danh sách toàn bộ sản phẩm hiện có trong database.</p>
                 </div>
@@ -168,7 +165,7 @@ export default function AdminProductsPage() {
                                 </span>
                                 <span>
                                     <Link
-                                        to={PATHS.PRODUCT.replace(
+                                        to={PATHS.ADMIN_PRODUCT.replace(
                                             ":id",
                                             product.id,
                                         )}

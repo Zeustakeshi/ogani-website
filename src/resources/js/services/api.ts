@@ -1,5 +1,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
+type ApiRequestConfig = InternalAxiosRequestConfig & {
+    suppressUnauthorizedRedirect?: boolean;
+};
+
 const api = axios.create({
     baseURL: "/api",
     headers: {
@@ -17,11 +21,14 @@ api.interceptors.request.use(
             return null;
         };
 
-        const token = getCookie('token');
+        const token = localStorage.getItem("token") || getCookie('token');
 
         if (token) {
-            config.headers = config.headers ?? {};
-            (config.headers as any).Authorization = `Bearer ${token}`;
+            if (typeof config.headers.set === "function") {
+                config.headers.set("Authorization", `Bearer ${token}`);
+            } else {
+                (config.headers as any).Authorization = `Bearer ${token}`;
+            }
         }
 
         return config;
@@ -32,7 +39,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-        if (error.response?.status === 401) {
+        const requestConfig = error.config as ApiRequestConfig | undefined;
+
+        if (
+            error.response?.status === 401 &&
+            !requestConfig?.suppressUnauthorizedRedirect
+        ) {
             localStorage.removeItem("token");
 
             if (typeof window !== "undefined") {

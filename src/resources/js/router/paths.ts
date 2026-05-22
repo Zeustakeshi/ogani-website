@@ -7,6 +7,7 @@ export const PATHS: { [key: string]: string } = {
   LOGIN: "/login",
   ADMIN_LOGIN: "/admin/login",
   ADMIN: "/admin",
+  ADMIN_PRODUCT: "/admin/products/:id",
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",
 };

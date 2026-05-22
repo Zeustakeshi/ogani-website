@@ -12,10 +12,11 @@ type AuthUser = {
 
 type AuthState = {
     user: AuthUser | null;
+    token: string | null;
 };
 
 type AuthContextType = AuthState & {
-    setAuth: (user: AuthUser) => void;
+    setAuth: (user: AuthUser, token?: string | null) => void;
     logout: (redirectTo?: string) => Promise<void>;
 };
 
@@ -25,10 +26,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [user, setUser] = useState<AuthUser | null>(null);
+    const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        // Try to restore session from server-side cookie via /api/me.
-        // This works even when the token cookie is HttpOnly.
+        const storedToken = localStorage.getItem("token");
+
+        if (storedToken) {
+            setToken(storedToken);
+        }
+
         (async () => {
             try {
                 const res = await fetch("/api/me", { credentials: "include" });
@@ -39,9 +45,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 }
 
                 const data = await res.json();
-                // UserResource returns data in `data` key or directly — handle both
                 const payload = data.data ?? data;
-                const u = {
+                const restoredUser = {
                     id: payload.id ?? null,
                     email: payload.email,
                     username: payload.username,
@@ -50,18 +55,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     created_at: payload.created_at,
                 } as AuthUser;
 
-                setUser(u);
-                localStorage.setItem("user", JSON.stringify(u));
-            } catch (e) {
+                setUser(restoredUser);
+                localStorage.setItem("user", JSON.stringify(restoredUser));
+            } catch {
                 localStorage.removeItem("user");
                 setUser(null);
             }
         })();
     }, []);
 
-    const setAuth = (u: AuthUser) => {
-        setUser(u);
-        localStorage.setItem("user", JSON.stringify(u));
+    const setAuth = (nextUser: AuthUser, nextToken: string | null = null) => {
+        setUser(nextUser);
+        localStorage.setItem("user", JSON.stringify(nextUser));
+
+        if (nextToken) {
+            setToken(nextToken);
+            localStorage.setItem("token", nextToken);
+        }
     };
 
     const logout = async (redirectTo: string = PATHS.LOGIN) => {
@@ -70,23 +80,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                 method: "POST",
                 credentials: "include",
             });
-        } catch (e) {
+        } catch {
             // ignore
         }
 
-        // Clear user state and local storage
         setUser(null);
+        setToken(null);
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
 
-        // Clear all cookies accessible from JS
         const cookies = document.cookie.split(";");
         for (const cookie of cookies) {
             const eqPos = cookie.indexOf("=");
             const name =
                 eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-            // Clear cookie for current path
             document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
-            // Also attempt to clear for the current domain
             try {
                 const domain = window.location.hostname;
                 document.cookie = `${name}=; Path=/; Domain=${domain}; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -99,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     return (
-        <AuthContext.Provider value={{ user, setAuth, logout }}>
+        <AuthContext.Provider value={{ user, token, setAuth, logout }}>
             {children}
         </AuthContext.Provider>
     );

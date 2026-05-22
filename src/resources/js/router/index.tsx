@@ -12,6 +12,7 @@ import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import AdminLoginPage from "../pages/AdminLoginPage";
 import AdminDashboardPage from "../pages/AdminDashboardPage";
 import AdminProductsPage from "../pages/AdminProductsPage";
+import AdminProductDetailPage from "@/pages/AdminProductDetailPage";
 import AdminOrdersPage from "../pages/AdminOrdersPage";
 import AdminLayout from "@/components/admin/AdminLayout";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
@@ -36,6 +37,10 @@ const routes = [
                     {
                         path: "products",
                         element: <AdminProductsPage />,
+                    },
+                    {
+                        path: "products/:id",
+                        element: <AdminProductDetailPage />,
                     },
                     {
                         path: "orders",

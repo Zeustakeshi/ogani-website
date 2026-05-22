@@ -58,9 +58,10 @@ const LoginPage: React.FC<LoginPageProps> = () => {
         try {
             const response = await authService.login(formData);
             const user = response?.data?.user;
+            const token = response?.data?.token;
 
             if (user) {
-                setAuth(user as any);
+                setAuth(user as any, token);
             }
 
             navigate(user?.role === "admin" ? PATHS.ADMIN : PATHS.HOME, {

@@ -63,7 +63,7 @@ export default function RegisterPage() {
             const user = response?.data?.user;
 
             if (user) {
-                setAuth(user as any);
+                setAuth(user as any, token);
             }
 
             navigate(PATHS.HOME, { replace: true });
