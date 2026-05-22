@@ -15,6 +15,11 @@ const adminMenu = [
         icon: "fa-cubes",
     },
     {
+        label: "Quản lý danh mục",
+        to: `${PATHS.ADMIN}/categories`,
+        icon: "fa-list-alt",
+    },
+    {
         label: "Quản lý khuyến mãi",
         to: `${PATHS.ADMIN}/coupons`,
         icon: "fa-tags",
