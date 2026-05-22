@@ -2,12 +2,51 @@ import React from "react";
 import BillingForm from "./BillingForm";
 import OrderSummary from "./OrderSummary";
 
-interface CheckoutLayoutProps {}
+type CheckoutItem = {
+    name: string;
+    price: number;
+};
 
-const CheckoutLayout: React.FC<CheckoutLayoutProps> = () => {
+interface CheckoutLayoutProps {
+    items?: CheckoutItem[];
+    subtotal?: number;
+    total?: number;
+    isLoading?: boolean;
+    errorMessage?: string | null;
+    isPlacingOrder?: boolean;
+    onPlaceOrder?: () => void;
+}
+
+const CheckoutLayout: React.FC<CheckoutLayoutProps> = ({
+    items = [],
+    subtotal = 0,
+    total = 0,
+    isLoading = false,
+    errorMessage,
+    isPlacingOrder = false,
+    onPlaceOrder,
+}) => {
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+    };
+
     return (
         <section className="checkout spad">
             <div className="container">
+                {isLoading && (
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <p>Đang tải thông tin thanh toán...</p>
+                        </div>
+                    </div>
+                )}
+                {errorMessage && (
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <p>{errorMessage}</p>
+                        </div>
+                    </div>
+                )}
                 <div className="row">
                     <div className="col-lg-12">
                         <h6>
@@ -19,13 +58,19 @@ const CheckoutLayout: React.FC<CheckoutLayoutProps> = () => {
                 </div>
                 <div className="checkout__form">
                     <h4>Billing Details</h4>
-                    <form action="#">
+                    <form onSubmit={handleSubmit}>
                         <div className="row">
                             <div className="col-lg-8 col-md-6">
                                 <BillingForm />
                             </div>
                             <div className="col-lg-4 col-md-6">
-                                <OrderSummary />
+                                <OrderSummary
+                                    items={items}
+                                    subtotal={subtotal}
+                                    total={total}
+                                    onPlaceOrder={onPlaceOrder}
+                                    isPlacingOrder={isPlacingOrder}
+                                />
                             </div>
                         </div>
                     </form>

@@ -17,15 +17,19 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'status',
+        'momo_order_id',
         'coupon_code',
         'total',
         'note',
+        'momo_trans_id',
+        'paid_at',
         'created_at',
     ];
 
     protected $casts = [
         'user_id' => 'integer',
         'total' => 'integer',
+        'paid_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

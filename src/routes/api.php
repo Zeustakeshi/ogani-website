@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ProductReview\ProductReviewController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Cart\CartController;
+use App\Http\Controllers\Api\Payment\MomoController;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -27,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('/cart/items', [CartController::class, 'store']);
 	Route::match(['put', 'patch'], '/cart/items/{product}', [CartController::class, 'update']);
 	Route::delete('/cart/items/{product}', [CartController::class, 'destroy']);
+	 Route::post('/payment/momo/checkout', [MomoController::class, 'checkout']);
+	 Route::post('/payment/momo/callback', [MomoController::class, 'callback']);
 	Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store']);
 	Route::match(['put', 'patch'], '/products/{product}/reviews/{review}', [ProductReviewController::class, 'update']);
 	Route::delete('/products/{product}/reviews/{review}', [ProductReviewController::class, 'destroy']);

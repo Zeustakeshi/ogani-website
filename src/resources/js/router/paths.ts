@@ -4,6 +4,8 @@ export const PATHS: { [key: string]: string } = {
   PRODUCT: "/product/:id",
   CART: "/cart",
   CHECKOUT: "/checkout",
+  MOMO_RETURN: "/checkout/momo-return",
+  ORDERS: "/orders",
   LOGIN: "/login",
   ADMIN_LOGIN: "/admin/login",
   ADMIN: "/admin",
