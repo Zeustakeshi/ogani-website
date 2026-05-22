@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Product\ProductController;
+use App\Http\Controllers\Api\ProductReview\ProductReviewController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Cart\CartController;
@@ -18,12 +19,16 @@ Route::get('/categories/{category}', [CategoryController::class, 'show']);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
+Route::get('/products/{product}/reviews', [ProductReviewController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
 	Route::get('/cart', [CartController::class, 'index']);
 	Route::post('/cart/items', [CartController::class, 'store']);
 	Route::match(['put', 'patch'], '/cart/items/{product}', [CartController::class, 'update']);
 	Route::delete('/cart/items/{product}', [CartController::class, 'destroy']);
+	Route::post('/products/{product}/reviews', [ProductReviewController::class, 'store']);
+	Route::match(['put', 'patch'], '/products/{product}/reviews/{review}', [ProductReviewController::class, 'update']);
+	Route::delete('/products/{product}/reviews/{review}', [ProductReviewController::class, 'destroy']);
 
 	Route::middleware('admin')->group(function () {
 		Route::post('/categories', [CategoryController::class, 'store']);

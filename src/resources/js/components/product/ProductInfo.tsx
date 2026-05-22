@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ProductReviewItem } from "./ProductReviewList";
 
 interface ProductInfoProps {
     title?: string;
@@ -6,7 +7,12 @@ interface ProductInfoProps {
     price?: string;
     description?: string;
     quantity?: number;
+    image?: string;
+    productId?: string;
+    availability?: boolean;
+    weight?: number;
     onQuantityChange?: (quantity: number) => void;
+    reviews?: ProductReviewItem[];
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
@@ -15,7 +21,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     price = "$50.00",
     description = "Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Sed porttitor lectus nibh. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Proin eget tortor risus.",
     quantity = 1,
+    image = "/img/product/details/product-details-1.jpg",
+    productId = "1",
+    availability = true,
+    weight = 0.5,
     onQuantityChange,
+    reviews,
 }) => {
     const [currentQuantity, setCurrentQuantity] = useState(quantity);
 
@@ -33,11 +44,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         e?.preventDefault();
 
         const item = {
-            id: 1,
+            id: productId,
             title,
             price,
             quantity: currentQuantity,
-            image: "/img/product/details/product-details-1.jpg",
+            image,
         };
 
         try {
@@ -68,16 +79,36 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         }
     };
 
+    const starValues = [1, 2, 3, 4, 5];
+    const renderStars = (rating: number) =>
+        starValues.map((starNumber) => (
+            <i
+                key={`review-star-${starNumber}`}
+                className={starNumber <= rating ? "fa fa-star" : "fa fa-star-o"}
+                aria-hidden="true"
+            />
+        ));
+
+    const averageRating =
+        reviews.length > 0
+            ? reviews.reduce(
+                  (sum, review) => sum + Number(review.rating || 0),
+                  0,
+              ) / reviews.length
+            : 0;
+
     return (
         <div className="product__details__text">
             <h3>{title}</h3>
-            <div className="product__details__rating">
-                <i className="fa fa-star"></i>
-                <i className="fa fa-star"></i>
-                <i className="fa fa-star"></i>
-                <i className="fa fa-star"></i>
-                <i className="fa fa-star-half-o"></i>
-                <span>({reviewsCount} reviews)</span>
+            <div
+                className="product__reviews__summary"
+                aria-label="Rating summary"
+            >
+                <div>{renderStars(Math.round(averageRating))}</div>
+                <span>
+                    {averageRating > 0 ? averageRating.toFixed(1) : "0.0"}/5
+                </span>
+                <span>({reviewsCount} người đánh giá)</span>
             </div>
             <div className="product__details__price">{price}</div>
             <p>{description}</p>
@@ -135,10 +166,10 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             <a href="#" className="primary-btn" onClick={addToCart}>
                 ADD TO CARD
             </a>
-
             <ul>
                 <li>
-                    <b>Availability</b> <span>In Stock</span>
+                    <b>Availability</b>{" "}
+                    <span>{availability ? "In Stock" : "Out of Stock"}</span>
                 </li>
                 <li>
                     <b>Shipping</b>{" "}
@@ -147,7 +178,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                     </span>
                 </li>
                 <li>
-                    <b>Weight</b> <span>0.5 kg</span>
+                    <b>Weight</b> <span>{weight} kg</span>
                 </li>
                 <li>
                     <b>Share on</b>

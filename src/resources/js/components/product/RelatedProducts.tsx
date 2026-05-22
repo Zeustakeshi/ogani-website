@@ -2,10 +2,11 @@ import React from "react";
 import ProductCard from "../ui/ProductCard";
 
 interface RelatedProduct {
-    id: number;
+    id: string;
     image: string;
     title: string;
     price: string;
+    link?: string;
 }
 
 interface RelatedProductsProps {

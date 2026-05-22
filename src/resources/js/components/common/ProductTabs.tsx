@@ -1,9 +1,22 @@
 import React, { useState } from "react";
+import ProductReviewInput from "@/components/product/ProductReviewInput";
+import ProductReviewList, {
+    ProductReviewItem,
+} from "@/components/product/ProductReviewList";
 
 interface ProductTabsProps {
     description?: string[];
     information?: string[];
     reviewsCount?: number;
+    productId?: string;
+    reviews?: ProductReviewItem[];
+    currentUser?: {
+        id: number;
+        username?: string | null;
+    } | null;
+    isReviewsLoading?: boolean;
+    onReviewSubmitted?: () => void | Promise<void>;
+    hasUserReview?: boolean;
 }
 
 const ProductTabs: React.FC<ProductTabsProps> = ({
@@ -16,6 +29,12 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
         "Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum porta. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus nibh. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.",
     ],
     reviewsCount = 1,
+    productId,
+    reviews = [],
+    currentUser,
+    isReviewsLoading = false,
+    onReviewSubmitted,
+    hasUserReview = false,
 }) => {
     const [activeTab, setActiveTab] = useState<
         "description" | "information" | "reviews"
@@ -97,11 +116,21 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
                     id="tabs-3"
                     role="tabpanel"
                 >
-                    <div className="product__details__tab__desc">
-                        <h6>Products Infomation</h6>
-                        {information.slice(0, 1).map((paragraph, index) => (
-                            <p key={`reviews-${index}`}>{paragraph}</p>
-                        ))}
+                    <div className="product__reviews">
+                        <ProductReviewInput
+                            productId={productId}
+                            currentUser={currentUser}
+                            hasExistingReview={hasUserReview}
+                            onSubmitted={onReviewSubmitted}
+                        />
+                        <ProductReviewList
+                            reviews={reviews}
+                            reviewsCount={reviewsCount}
+                            isLoading={isReviewsLoading}
+                            productId={productId}
+                            currentUser={currentUser}
+                            onMutated={onReviewSubmitted}
+                        />
                     </div>
                 </div>
             </div>
