@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
     image: string;
@@ -45,12 +46,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
             <div className="product__item__text">
                 <h6>
-                    <a href={link}>{title}</a>
+                    <Link to={link}>{title}</Link>
                 </h6>
                 <h5>
                     {price}
                     {oldPrice && <span> {oldPrice}</span>}
                 </h5>
+                <Link to={link} className="primary-btn product__item__view">
+                    Xem sản phẩm
+                </Link>
             </div>
         </div>
     );

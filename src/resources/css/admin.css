@@ -280,6 +280,35 @@
 	color: #6f6f6f;
 }
 
+.admin-page__table-card--products .admin-page__table-head,
+.admin-page__table-card--products .admin-page__table-row {
+	grid-template-columns: 82px 1.7fr 1.4fr 1fr 1fr 1.1fr;
+}
+
+.admin-page__product-thumbnail {
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: 8px;
+	border: 1px solid rgba(28, 28, 28, 0.1);
+}
+
+.admin-page__view-link {
+	display: inline-block;
+	background: #7fad39;
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	padding: 8px 12px;
+}
+
+.admin-page__view-link:hover {
+	color: #ffffff;
+	opacity: 0.9;
+}
+
 .admin-page--overview {
 	gap: 28px;
 }

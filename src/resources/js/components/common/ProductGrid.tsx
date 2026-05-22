@@ -3,12 +3,13 @@ import ProductCard from "../ui/ProductCard";
 
 interface ProductGridProps {
     products?: Array<{
-        id: number;
+        id: number | string;
         image: string;
         title: string;
         price: string;
         oldPrice?: string;
         onSale?: boolean;
+        link?: string;
     }>;
 }
 
@@ -23,6 +24,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products = [] }) => {
                         price={product.price}
                         oldPrice={product.oldPrice}
                         onSale={product.onSale}
+                        link={product.link}
                     />
                 </div>
             ))}

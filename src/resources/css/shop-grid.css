@@ -368,6 +368,25 @@
 	font-weight: 700;
 }
 
+.product__item__view {
+	display: inline-block;
+	margin-top: 14px;
+	padding: 8px 18px 7px;
+	font-size: 12px;
+	letter-spacing: 1px;
+}
+
+.product__pagination a.active {
+	background: #7fad39;
+	border-color: #7fad39;
+	color: #ffffff;
+}
+
+.product__pagination a.disabled {
+	opacity: 0.4;
+	pointer-events: none;
+}
+
 .product__pagination,
 .blog__pagination {
 	padding-top: 10px;

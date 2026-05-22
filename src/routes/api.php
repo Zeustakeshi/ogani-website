@@ -15,9 +15,11 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
-	Route::post('/products', [ProductController::class, 'store']);
-	Route::match(['put', 'patch'], '/products/{product}', [ProductController::class, 'update']);
-	Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+	Route::middleware('admin')->group(function () {
+		Route::post('/products', [ProductController::class, 'store']);
+		Route::match(['put', 'patch'], '/products/{product}', [ProductController::class, 'update']);
+		Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+	});
 });
 
 Route::get('/me', function (Request $request) {
