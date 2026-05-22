@@ -31,9 +31,18 @@ type CheckoutCartSummaryResponse = {
 };
 
 type CheckoutItem = {
+    image: string;
     name: string;
     price: number;
+    quantity: number;
 };
+
+type CheckoutFormState = {
+    address: string;
+    orderNote: string;
+};
+
+const fallbackImage = "/img/product/details/product-details-1.jpg";
 
 const CheckoutPage: React.FC<CheckoutPageProps> = () => {
     const breadcrumbItems = [
@@ -44,6 +53,10 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
     const [items, setItems] = useState<CheckoutItem[]>([]);
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
+    const [billingForm, setBillingForm] = useState<CheckoutFormState>({
+        address: "",
+        orderNote: "",
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -76,15 +89,26 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
                         const quantity = Number(item.amount ?? 0);
 
                         return {
+                            image: product?.images?.[0] ?? fallbackImage,
                             name: product?.name ?? "Sản phẩm",
                             price: price * quantity,
+                            quantity,
                         };
                     })
-                    .filter((item) => item.price > 0);
+                    .filter((item) => item.quantity > 0);
 
                 setItems(normalizedItems);
-                setSubtotal(Number(summaryResponse.data?.data?.total ?? 0));
-                setTotal(Number(summaryResponse.data?.data?.total ?? 0));
+                const calculatedSubtotal = normalizedItems.reduce(
+                    (sum, item) => sum + item.price,
+                    0,
+                );
+
+                setSubtotal(calculatedSubtotal);
+                setTotal(
+                    Number(
+                        summaryResponse.data?.data?.total ?? calculatedSubtotal,
+                    ),
+                );
             } catch {
                 if (isActive) {
                     setErrorMessage(
@@ -107,11 +131,19 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
     }, []);
 
     const handlePlaceOrder = async () => {
+        if (!billingForm.address.trim()) {
+            setErrorMessage("Vui lòng nhập địa chỉ giao hàng.");
+            return;
+        }
+
         setIsPlacingOrder(true);
         setErrorMessage(null);
 
         try {
-            const response = await createMomoCheckout();
+            const response = await createMomoCheckout({
+                address: billingForm.address,
+                note: billingForm.orderNote,
+            });
             const payUrl = response.data?.data?.payUrl;
 
             if (!payUrl) {
@@ -144,6 +176,20 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
                 errorMessage={errorMessage}
                 isPlacingOrder={isPlacingOrder}
                 onPlaceOrder={handlePlaceOrder}
+                billingForm={{
+                    address: billingForm.address,
+                    orderNote: billingForm.orderNote,
+                    onAddressChange: (value) =>
+                        setBillingForm((current) => ({
+                            ...current,
+                            address: value,
+                        })),
+                    onOrderNoteChange: (value) =>
+                        setBillingForm((current) => ({
+                            ...current,
+                            orderNote: value,
+                        })),
+                }}
             />
         </>
     );

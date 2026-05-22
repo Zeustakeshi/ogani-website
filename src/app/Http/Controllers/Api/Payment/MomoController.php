@@ -19,7 +19,10 @@ class MomoController extends Controller
     public function checkout(Request $request): JsonResponse
     {
         try {
-            $result = $this->momoService->createCheckout($request->user());
+            $result = $this->momoService->createCheckout($request->user(), [
+                'address' => (string) $request->input('address', ''),
+                'note' => (string) $request->input('note', ''),
+            ]);
 
             return response()->json([
                 'success' => true,

@@ -20,8 +20,13 @@ export type MomoCallbackResponse = {
 
 export type MomoCallbackPayload = Record<string, string>;
 
-export const createMomoCheckout = () => {
-    return api.post<MomoCreateCheckoutResponse>("/payment/momo/checkout");
+export type MomoCreateCheckoutPayload = {
+    address: string;
+    note?: string;
+};
+
+export const createMomoCheckout = (payload: MomoCreateCheckoutPayload) => {
+    return api.post<MomoCreateCheckoutResponse>("/payment/momo/checkout", payload);
 };
 
 export const sendMomoCallback = (payload: MomoCallbackPayload) => {

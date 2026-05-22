@@ -44,7 +44,7 @@ class MomoService
         'transId',
     ];
 
-    public function createCheckout(User $user): array
+    public function createCheckout(User $user, array $input = []): array
     {
         $this->requireConfig('partner_code');
         $this->requireConfig('access_key');
@@ -73,11 +73,20 @@ class MomoService
             throw new RuntimeException('Không thể tạo thanh toán cho giỏ hàng không hợp lệ.');
         }
 
-        $order = DB::transaction(function () use ($user, $items, $total): Order {
+        $address = trim((string) ($input['address'] ?? ''));
+        $note = trim((string) ($input['note'] ?? ''));
+
+        if ($address === '') {
+            throw new InvalidArgumentException('Vui lòng nhập địa chỉ giao hàng.');
+        }
+
+        $order = DB::transaction(function () use ($user, $items, $total, $address, $note): Order {
             $order = Order::query()->create([
                 'user_id' => $user->id,
                 'status' => 'pending',
                 'total' => $total,
+                'address' => $address,
+                'note' => $note !== '' ? $note : null,
                 'created_at' => now(),
             ]);
 

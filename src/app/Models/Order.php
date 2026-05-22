@@ -20,6 +20,7 @@ class Order extends Model
         'momo_order_id',
         'coupon_code',
         'total',
+        'address',
         'note',
         'momo_trans_id',
         'paid_at',

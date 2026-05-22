@@ -3,9 +3,18 @@ import BillingForm from "./BillingForm";
 import OrderSummary from "./OrderSummary";
 
 type CheckoutItem = {
+    image: string;
     name: string;
     price: number;
+    quantity: number;
 };
+
+interface BillingFormValues {
+    address: string;
+    orderNote: string;
+    onAddressChange: (value: string) => void;
+    onOrderNoteChange: (value: string) => void;
+}
 
 interface CheckoutLayoutProps {
     items?: CheckoutItem[];
@@ -15,6 +24,7 @@ interface CheckoutLayoutProps {
     errorMessage?: string | null;
     isPlacingOrder?: boolean;
     onPlaceOrder?: () => void;
+    billingForm?: BillingFormValues;
 }
 
 const CheckoutLayout: React.FC<CheckoutLayoutProps> = ({
@@ -25,6 +35,7 @@ const CheckoutLayout: React.FC<CheckoutLayoutProps> = ({
     errorMessage,
     isPlacingOrder = false,
     onPlaceOrder,
+    billingForm,
 }) => {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -61,7 +72,18 @@ const CheckoutLayout: React.FC<CheckoutLayoutProps> = ({
                     <form onSubmit={handleSubmit}>
                         <div className="row">
                             <div className="col-lg-8 col-md-6">
-                                <BillingForm />
+                                <BillingForm
+                                    address={billingForm?.address ?? ""}
+                                    orderNote={billingForm?.orderNote ?? ""}
+                                    onAddressChange={
+                                        billingForm?.onAddressChange ??
+                                        (() => undefined)
+                                    }
+                                    onOrderNoteChange={
+                                        billingForm?.onOrderNoteChange ??
+                                        (() => undefined)
+                                    }
+                                />
                             </div>
                             <div className="col-lg-4 col-md-6">
                                 <OrderSummary

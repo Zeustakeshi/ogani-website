@@ -3,8 +3,10 @@ import PaymentMethods from "./PaymentMethods";
 import PlaceOrderButton from "./PlaceOrderButton";
 
 type OrderSummaryItem = {
+    image: string;
     name: string;
     price: number;
+    quantity: number;
 };
 
 interface OrderSummaryProps {
@@ -35,8 +37,26 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             <ul>
                 {items.length > 0 ? (
                     items.map((item) => (
-                        <li key={item.name}>
-                            {item.name}{" "}
+                        <li
+                            key={`${item.name}-${item.quantity}`}
+                            style={{
+                                display: "flex",
+                                gap: 12,
+                                alignItems: "center",
+                            }}
+                        >
+                            <img
+                                src={item.image}
+                                alt={item.name}
+                                style={{
+                                    width: 54,
+                                    height: 54,
+                                    objectFit: "cover",
+                                }}
+                            />
+                            <span style={{ flex: 1 }}>
+                                {item.name} x{item.quantity}
+                            </span>
                             <span>{`${priceFormatter.format(item.price)}đ`}</span>
                         </li>
                     ))
@@ -52,7 +72,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             <div className="checkout__order__total">
                 Total <span>{`${priceFormatter.format(total)}đ`}</span>
             </div>
-            <PaymentMethods />
+
             <PlaceOrderButton
                 onPlaceOrder={onPlaceOrder}
                 isLoading={isPlacingOrder}
