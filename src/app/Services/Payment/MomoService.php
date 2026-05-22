@@ -4,6 +4,7 @@ namespace App\Services\Payment;
 
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\ProductCart;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -83,7 +84,7 @@ class MomoService
         $order = DB::transaction(function () use ($user, $items, $total, $address, $note): Order {
             $order = Order::query()->create([
                 'user_id' => $user->id,
-                'status' => 'pending',
+                'status' => Order::STATUS_PENDING,
                 'total' => $total,
                 'address' => $address,
                 'note' => $note !== '' ? $note : null,
@@ -167,7 +168,7 @@ class MomoService
             });
         }
 
-        if ($order->status === 'paid') {
+        if ($order->status === Order::STATUS_PAID) {
             return [
                 'message' => 'Đơn hàng đã được xử lý trước đó.',
                 'order' => $order,
@@ -178,16 +179,45 @@ class MomoService
         $message = (string) ($payload['message'] ?? '');
 
         if ($resultCode === 0) {
-            $order->forceFill([
-                'status' => 'paid',
-                'momo_trans_id' => (string) ($payload['transId'] ?? ''),
-                'paid_at' => now(),
-            ])->save();
+            DB::transaction(function () use ($order, $payload): void {
+                $order->loadMissing('items');
 
-            $cart = Cart::query()->firstWhere('user_id', $order->user_id);
-            if ($cart) {
-                $cart->items()->delete();
-            }
+                foreach ($order->items as $item) {
+                    $product = Product::query()
+                        ->whereKey($item->product_id)
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (! $product) {
+                        throw new RuntimeException(sprintf(
+                            'Không tìm thấy sản phẩm %s trong đơn hàng.',
+                            $item->product_id,
+                        ));
+                    }
+
+                    if ((int) $product->inventory < (int) $item->amount) {
+                        throw new RuntimeException(sprintf(
+                            'Sản phẩm %s không đủ tồn kho để hoàn tất đơn hàng.',
+                            $product->name,
+                        ));
+                    }
+
+                    $product->forceFill([
+                        'inventory' => (int) $product->inventory - (int) $item->amount,
+                    ])->save();
+                }
+
+                $order->forceFill([
+                    'status' => Order::STATUS_PAID,
+                    'momo_trans_id' => (string) ($payload['transId'] ?? ''),
+                    'paid_at' => now(),
+                ])->save();
+
+                $cart = Cart::query()->firstWhere('user_id', $order->user_id);
+                if ($cart) {
+                    $cart->items()->delete();
+                }
+            });
 
             return [
                 'message' => $message !== '' ? $message : 'Thanh toán thành công.',
@@ -196,7 +226,7 @@ class MomoService
         }
 
         $order->forceFill([
-            'status' => 'failed',
+            'status' => Order::STATUS_CANCEL,
         ])->save();
 
         return [

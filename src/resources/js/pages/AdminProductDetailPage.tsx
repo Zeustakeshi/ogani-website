@@ -12,6 +12,7 @@ type AdminProductDetail = {
     is_availability: boolean;
     reviews: number;
     weight: number;
+    inventory: number;
     images: string[];
     category_id: string;
 };
@@ -34,11 +35,22 @@ type ProductFormState = {
     price: string;
     description: string;
     weight: string;
+    inventory: string;
     isAvailability: boolean;
     categoryId: string;
 };
 
 const fallbackImage = "/img/product/details/product-details-1.jpg";
+
+const createEmptyFormState = (): ProductFormState => ({
+    name: "",
+    price: "",
+    description: "",
+    weight: "",
+    inventory: "0",
+    isAvailability: true,
+    categoryId: "",
+});
 
 const normalizeProduct = (
     payload: ProductDetailResponse | undefined,
@@ -57,6 +69,7 @@ const normalizeProduct = (
         is_availability: Boolean(product.is_availability),
         reviews: Number(product.reviews ?? 0),
         weight: Number(product.weight ?? 0),
+        inventory: Number(product.inventory ?? 0),
         images: Array.isArray(product.images) ? product.images : [],
         category_id: String(product.category_id ?? ""),
     };
@@ -66,14 +79,9 @@ const AdminProductDetailPage: React.FC = () => {
     const { id } = useParams();
     const [product, setProduct] = useState<AdminProductDetail | null>(null);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [formState, setFormState] = useState<ProductFormState>({
-        name: "",
-        price: "",
-        description: "",
-        weight: "",
-        isAvailability: true,
-        categoryId: "",
-    });
+    const [formState, setFormState] = useState<ProductFormState>(
+        createEmptyFormState(),
+    );
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [loadError, setLoadError] = useState<string | null>(null);
@@ -116,14 +124,7 @@ const AdminProductDetailPage: React.FC = () => {
                 if (!normalizedProduct) {
                     setLoadError("Không thể tải thông tin sản phẩm.");
                     setProduct(null);
-                    setFormState({
-                        name: "",
-                        price: "",
-                        description: "",
-                        weight: "",
-                        isAvailability: true,
-                        categoryId: "",
-                    });
+                    setFormState(createEmptyFormState());
                     return;
                 }
 
@@ -133,6 +134,7 @@ const AdminProductDetailPage: React.FC = () => {
                     price: String(normalizedProduct.price),
                     description: normalizedProduct.description,
                     weight: String(normalizedProduct.weight),
+                    inventory: String(normalizedProduct.inventory),
                     isAvailability: normalizedProduct.is_availability,
                     categoryId: normalizedProduct.category_id,
                 });
@@ -142,14 +144,7 @@ const AdminProductDetailPage: React.FC = () => {
                         "Không thể tải thông tin sản phẩm. Vui lòng thử lại.",
                     );
                     setProduct(null);
-                    setFormState({
-                        name: "",
-                        price: "",
-                        description: "",
-                        weight: "",
-                        isAvailability: true,
-                        categoryId: "",
-                    });
+                    setFormState(createEmptyFormState());
                 }
             } finally {
                 if (isActive) {
@@ -201,6 +196,7 @@ const AdminProductDetailPage: React.FC = () => {
             formState.description.trim() !==
                 (product?.description ?? "").trim() ||
             formState.weight.trim() !== String(product?.weight ?? "") ||
+            formState.inventory.trim() !== String(product?.inventory ?? 0) ||
             formState.isAvailability !== (product?.is_availability ?? true) ||
             formState.categoryId !== (product?.category_id ?? ""));
 
@@ -223,6 +219,7 @@ const AdminProductDetailPage: React.FC = () => {
                     price: Number(formState.price),
                     description: formState.description.trim(),
                     weight: Number(formState.weight),
+                    inventory: Number(formState.inventory),
                     is_availability: formState.isAvailability,
                     category_id: formState.categoryId,
                 },
@@ -238,6 +235,7 @@ const AdminProductDetailPage: React.FC = () => {
                     price: String(updatedProduct.price),
                     description: updatedProduct.description,
                     weight: String(updatedProduct.weight),
+                    inventory: String(updatedProduct.inventory),
                     isAvailability: updatedProduct.is_availability,
                     categoryId: updatedProduct.category_id,
                 });
@@ -460,6 +458,28 @@ const AdminProductDetailPage: React.FC = () => {
                                             }))
                                         }
                                         placeholder="Nhập cân nặng sản phẩm"
+                                        style={{ ...inputStyle }}
+                                    />
+                                </div>
+
+                                <div className="admin-auth-page__field">
+                                    <label htmlFor="admin-product-inventory">
+                                        Tồn kho
+                                    </label>
+                                    <input
+                                        id="admin-product-inventory"
+                                        name="inventory"
+                                        type="number"
+                                        min="0"
+                                        step="1"
+                                        value={formState.inventory}
+                                        onChange={(event) =>
+                                            setFormState((current) => ({
+                                                ...current,
+                                                inventory: event.target.value,
+                                            }))
+                                        }
+                                        placeholder="Nhập số lượng tồn kho"
                                         style={{ ...inputStyle }}
                                     />
                                 </div>

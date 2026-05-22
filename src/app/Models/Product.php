@@ -27,6 +27,7 @@ class Product extends Model
 		'description',
 		'is_availability',
 		'weight',
+		'inventory',
 		'images',
 	];
 
@@ -36,6 +37,7 @@ class Product extends Model
 		'price' => 'integer',
 		'is_availability' => 'boolean',
 		'weight' => 'float',
+		'inventory' => 'integer',
 		'images' => 'array',
 	];
 

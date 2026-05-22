@@ -19,6 +19,7 @@ type ProductDetail = {
     description: string;
     is_availability: boolean;
     weight: number;
+    inventory: number;
     images: string[];
 };
 
@@ -93,6 +94,7 @@ const normalizeProduct = (
         description: product.description ?? "",
         is_availability: Boolean(product.is_availability),
         weight: Number(product.weight ?? 0),
+        inventory: Number(product.inventory ?? 0),
         images: Array.isArray(product.images) ? product.images : [],
     };
 };
@@ -335,6 +337,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = () => {
                                 productId={product?.id}
                                 availability={product?.is_availability}
                                 weight={product?.weight}
+                                inventory={product?.inventory}
                             />
                         </div>
                     </div>

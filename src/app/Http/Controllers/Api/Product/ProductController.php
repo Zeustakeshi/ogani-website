@@ -131,6 +131,7 @@ class ProductController extends Controller
 		$product = $this->productService->create(array_merge([
 			'reviews' => 0,
 			'is_availability' => true,
+			'inventory' => 0,
 		], $request->validated()));
 
 		return (new ProductResource($product))->response()->setStatusCode(201);

@@ -11,6 +11,20 @@ class Order extends Model
 {
     use HasFactory;
 
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_PAID = 'paid';
+    public const STATUS_CANCEL = 'cancel';
+    public const STATUS_SHIPPING = 'shipping';
+    public const STATUS_SUCCESS = 'success';
+
+    public const STATUS_LABELS = [
+        self::STATUS_PENDING => 'Chờ thanh toán',
+        self::STATUS_PAID => 'Đã thanh toán',
+        self::STATUS_CANCEL => 'Đã hủy',
+        self::STATUS_SHIPPING => 'Đang giao hàng',
+        self::STATUS_SUCCESS => 'Thành công',
+    ];
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = null;
 
@@ -41,5 +55,10 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
+    public function statusLabel(): string
+    {
+        return self::STATUS_LABELS[$this->status] ?? ucfirst((string) $this->status);
     }
 }

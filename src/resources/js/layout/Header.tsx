@@ -114,6 +114,9 @@ const Header: React.FC<HeaderProps> = () => {
                                 <li>
                                     <NavLink to="/shop">Sản phẩm</NavLink>
                                 </li>
+                                <li>
+                                    <NavLink to="/orders">Đơn hàng</NavLink>
+                                </li>
                                 {/* <li>
                                     <a href="#">Pages</a>
                                     <ul className="header__menu__dropdown">

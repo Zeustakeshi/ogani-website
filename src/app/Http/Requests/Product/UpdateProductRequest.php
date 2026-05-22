@@ -26,6 +26,7 @@ class UpdateProductRequest extends FormRequest
 			'description' => ['sometimes', 'string'],
 			'is_availability' => ['sometimes', 'boolean'],
 			'weight' => ['sometimes', 'numeric', 'min:0'],
+			'inventory' => ['sometimes', 'integer', 'min:0'],
 			'images' => ['sometimes', 'array', 'min:1'],
 			'images.*' => ['required_with:images', 'string', 'max:2048'],
 		];

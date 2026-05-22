@@ -30,6 +30,7 @@ class ProductFactory extends Factory
 			'description' => fake()->paragraphs(2, true),
 			'is_availability' => fake()->boolean(85),
 			'weight' => fake()->randomFloat(2, 0.2, 12),
+			'inventory' => fake()->numberBetween(0, 300),
 			'images' => array_map(
 				fn (int $imageIndex): string => '/img/product/product-' . $imageIndex . '.jpg',
 				$imageIndexes,

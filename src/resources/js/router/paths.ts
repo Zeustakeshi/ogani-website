@@ -6,6 +6,7 @@ export const PATHS: { [key: string]: string } = {
   CHECKOUT: "/checkout",
   MOMO_RETURN: "/checkout/momo-return",
   ORDERS: "/orders",
+  ORDER_DETAIL: "/orders/:id",
   LOGIN: "/login",
   ADMIN_LOGIN: "/admin/login",
   ADMIN: "/admin",

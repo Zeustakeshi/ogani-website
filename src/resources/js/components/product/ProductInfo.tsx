@@ -12,6 +12,7 @@ interface ProductInfoProps {
     productId?: string;
     availability?: boolean;
     weight?: number;
+    inventory?: number;
     onQuantityChange?: (quantity: number) => void;
     reviews?: ProductReviewItem[];
 }
@@ -26,23 +27,40 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     productId = "1",
     availability = true,
     weight = 0.5,
+    inventory = 0,
     onQuantityChange,
     reviews,
 }) => {
     const [currentQuantity, setCurrentQuantity] = useState(quantity);
 
     useEffect(() => {
-        setCurrentQuantity(quantity);
-    }, [quantity]);
+        if (inventory <= 0) {
+            setCurrentQuantity(0);
+            return;
+        }
+
+        setCurrentQuantity(Math.min(Math.max(1, quantity), inventory));
+    }, [quantity, inventory]);
 
     const updateQuantity = (nextQuantity: number) => {
+        if (inventory <= 0) {
+            setCurrentQuantity(0);
+            onQuantityChange?.(0);
+            return;
+        }
+
         const safeQuantity = Math.max(1, nextQuantity);
-        setCurrentQuantity(safeQuantity);
-        onQuantityChange?.(safeQuantity);
+        const cappedQuantity = Math.min(safeQuantity, inventory);
+        setCurrentQuantity(cappedQuantity);
+        onQuantityChange?.(cappedQuantity);
     };
 
     const addToCart = async (e?: React.MouseEvent<HTMLAnchorElement>) => {
         e?.preventDefault();
+
+        if (inventory <= 0) {
+            return;
+        }
 
         try {
             if (!productId) {
@@ -97,6 +115,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
             </div>
             <div className="product__details__price">{price}</div>
             <p>{description}</p>
+            <p>
+                <strong>Tồn kho: </strong>
+                <span>
+                    {inventory > 0 ? `${inventory} sản phẩm` : "Hết hàng"}
+                </span>
+            </p>
             <div className="product__details__quantity">
                 <div className="quantity">
                     <div className="pro-qty">
@@ -106,13 +130,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                                 background: "none",
                                 border: "none",
                             }}
+                            disabled={inventory <= 0 || currentQuantity <= 1}
                             onClick={() => updateQuantity(currentQuantity - 1)}
                         >
                             -
                         </button>
                         <input
                             type="text"
-                            value={currentQuantity}
+                            value={inventory > 0 ? currentQuantity : 0}
+                            disabled={inventory <= 0}
                             onChange={(event) => {
                                 const nextValue = Number(event.target.value);
 
@@ -124,6 +150,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                             }}
                             onBlur={() => updateQuantity(currentQuantity)}
                             onKeyDown={(event) => {
+                                if (inventory <= 0) {
+                                    event.preventDefault();
+                                    return;
+                                }
+
                                 if (event.key === "ArrowUp") {
                                     event.preventDefault();
                                     updateQuantity(currentQuantity + 1);
@@ -141,6 +172,9 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                                 border: "none",
                             }}
                             type="button"
+                            disabled={
+                                inventory <= 0 || currentQuantity >= inventory
+                            }
                             onClick={() => updateQuantity(currentQuantity + 1)}
                         >
                             +
@@ -148,13 +182,28 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
                     </div>
                 </div>
             </div>
-            <a href="#" className="primary-btn" onClick={addToCart}>
-                ADD TO CARD
+            <a
+                href="#"
+                className="primary-btn"
+                onClick={addToCart}
+                aria-disabled={inventory <= 0}
+                style={{
+                    pointerEvents: inventory <= 0 ? "none" : "auto",
+                    opacity: inventory <= 0 ? 0.6 : 1,
+                }}
+            >
+                {inventory <= 0 ? "HẾT HÀNG" : "ADD TO CARD"}
             </a>
             <ul>
                 <li>
                     <b>Availability</b>{" "}
-                    <span>{availability ? "In Stock" : "Out of Stock"}</span>
+                    <span>
+                        {inventory <= 0
+                            ? "Out of Stock"
+                            : availability
+                              ? "In Stock"
+                              : "Out of Stock"}
+                    </span>
                 </li>
                 <li>
                     <b>Shipping</b>{" "}

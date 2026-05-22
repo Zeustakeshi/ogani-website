@@ -8,6 +8,7 @@ import CartPage from "../pages/CartPage";
 import CheckoutPage from "../pages/CheckoutPage";
 import MomoReturnPage from "../pages/MomoReturnPage";
 import OrdersPage from "../pages/OrdersPage";
+import OrderDetailPage from "../pages/OrderDetailPage";
 import LoginPage from "../pages/LoginPage";
 import Register from "../pages/RegisterPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
@@ -78,6 +79,10 @@ const routes = [
             {
                 path: PATHS.ORDERS.replace(/^\//, ""),
                 element: <OrdersPage />,
+            },
+            {
+                path: PATHS.ORDER_DETAIL.replace(/^\//, ""),
+                element: <OrderDetailPage />,
             },
             { path: PATHS.LOGIN.replace(/^\//, ""), element: <LoginPage /> },
             {

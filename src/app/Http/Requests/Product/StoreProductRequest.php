@@ -26,6 +26,7 @@ class StoreProductRequest extends FormRequest
 			'description' => ['required', 'string'],
 			'is_availability' => ['sometimes', 'boolean'],
 			'weight' => ['required', 'numeric', 'min:0'],
+			'inventory' => ['sometimes', 'integer', 'min:0'],
 			'images' => ['required', 'array', 'min:1'],
 			'images.*' => ['required', 'string', 'max:2048'],
 		];
