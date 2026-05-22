@@ -61,7 +61,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             const user = response?.data?.user;
 
             if (user) {
-                setAuth(user);
+                setAuth(user as any);
             }
 
             navigate(PATHS.HOME, { replace: true });
