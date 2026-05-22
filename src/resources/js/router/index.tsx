@@ -11,6 +11,10 @@ import Register from "../pages/RegisterPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
 import AdminLoginPage from "../pages/AdminLoginPage";
 import AdminDashboardPage from "../pages/AdminDashboardPage";
+import AdminProductsPage from "../pages/AdminProductsPage";
+import AdminOrdersPage from "../pages/AdminOrdersPage";
+import AdminLayout from "@/components/admin/AdminLayout";
+import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import { PATHS } from "./paths";
 
 const routes = [
@@ -20,7 +24,30 @@ const routes = [
     },
     {
         path: PATHS.ADMIN.replace(/^\//, ""),
-        element: <AdminDashboardPage />,
+        element: <AdminRouteGuard />,
+        children: [
+            {
+                element: <AdminLayout />,
+                children: [
+                    {
+                        index: true,
+                        element: <AdminDashboardPage />,
+                    },
+                    {
+                        path: "products",
+                        element: <AdminProductsPage />,
+                    },
+                    {
+                        path: "orders",
+                        element: <AdminOrdersPage />,
+                    },
+                    {
+                        path: "*",
+                        element: <Navigate to={PATHS.ADMIN} replace />,
+                    },
+                ],
+            },
+        ],
     },
     {
         path: "/",

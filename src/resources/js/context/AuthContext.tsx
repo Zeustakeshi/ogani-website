@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { PATHS } from "@/router/paths";
 
 type AuthUser = {
     id: number | string | null;
@@ -15,7 +16,7 @@ type AuthState = {
 
 type AuthContextType = AuthState & {
     setAuth: (user: AuthUser) => void;
-    logout: () => Promise<void>;
+    logout: (redirectTo?: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -63,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.setItem("user", JSON.stringify(u));
     };
 
-    const logout = async () => {
+    const logout = async (redirectTo: string = PATHS.LOGIN) => {
         try {
             await fetch("/api/logout", {
                 method: "POST",
@@ -94,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             }
         }
 
-        window.location.href = "/login";
+        window.location.href = redirectTo;
     };
 
     return (

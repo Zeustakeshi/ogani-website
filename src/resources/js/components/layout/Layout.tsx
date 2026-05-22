@@ -2,14 +2,17 @@ import Footer from "@/layout/Footer";
 import Header from "@/layout/Header";
 import NavigationMenu from "@/layout/NavigationMenu";
 import TopBar from "@/layout/TopBar";
+import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Preloader from "../ui/Preloader";
 import HamburgerMenu from "../ui/HamburgerMenu";
+import { PATHS } from "@/router/paths";
 
 export default function Layout() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
+    const { user } = useAuth();
 
     useEffect(() => {
         const elements = document.querySelectorAll<HTMLElement>("[data-setbg]");
@@ -31,6 +34,10 @@ export default function Layout() {
             element.style.backgroundRepeat = "no-repeat";
         });
     }, [location.pathname]);
+
+    if (user?.role === "admin") {
+        return <Navigate to={PATHS.ADMIN} replace />;
+    }
 
     return (
         <>

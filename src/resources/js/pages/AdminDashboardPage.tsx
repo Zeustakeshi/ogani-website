@@ -1,70 +1,42 @@
-import { useAuth } from "@/context/AuthContext";
-import { PATHS } from "@/router/paths";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
 export default function AdminDashboardPage() {
-    const navigate = useNavigate();
-    const { user } = useAuth();
-    const [isCheckingAccess, setIsCheckingAccess] = useState(true);
-
-    useEffect(() => {
-        let isActive = true;
-
-        (async () => {
-            if (user?.role === "admin") {
-                if (isActive) {
-                    setIsCheckingAccess(false);
-                }
-
-                return;
-            }
-
-            try {
-                const response = await fetch("/api/me", {
-                    credentials: "include",
-                });
-
-                if (!response.ok) {
-                    navigate(PATHS.HOME, { replace: true });
-                    return;
-                }
-
-                const data = await response.json();
-                const payload = data.data ?? data;
-
-                if (payload?.role !== "admin") {
-                    navigate(PATHS.HOME, { replace: true });
-                    return;
-                }
-            } catch {
-                navigate(PATHS.HOME, { replace: true });
-                return;
-            }
-
-            if (isActive) {
-                setIsCheckingAccess(false);
-            }
-        })();
-
-        return () => {
-            isActive = false;
-        };
-    }, [navigate, user]);
-
-    if (isCheckingAccess) {
-        return null;
-    }
-
     return (
-        <section className="admin-dashboard-page">
-            <div className="admin-dashboard-page__card">
-                <span className="admin-dashboard-page__eyebrow">Admin</span>
-                <h1>Bảng điều khiển quản trị</h1>
-                <p>
-                    Bạn đã đăng nhập thành công vào khu admin. Từ đây có thể mở
-                    các module quản trị sản phẩm, đơn hàng và người dùng.
-                </p>
+        <section className="admin-page admin-page--overview">
+            <div className="admin-page__hero">
+                <div>
+                    <span className="admin-page__eyebrow">Tổng quan</span>
+                    <h1>Bảng điều khiển quản trị</h1>
+                    <p>
+                        Quản lý nhanh sản phẩm, đơn hàng và trạng thái vận hành
+                        của hệ thống từ một nơi.
+                    </p>
+                </div>
+
+                <div className="admin-page__hero-card">
+                    <strong>3</strong>
+                    <span>khu vực chính trong sidebar</span>
+                </div>
+            </div>
+
+            <div className="admin-page__stats">
+                <article className="admin-page__stat">
+                    <span>01</span>
+                    <strong>Quản lý sản phẩm</strong>
+                    <p>Đi đến danh sách và thao tác sản phẩm.</p>
+                </article>
+
+                <article className="admin-page__stat">
+                    <span>02</span>
+                    <strong>Quản lý đơn hàng</strong>
+                    <p>Xem trạng thái xử lý và cập nhật đơn hàng.</p>
+                </article>
+
+                <article className="admin-page__stat">
+                    <span>03</span>
+                    <strong>Điều hướng nhanh</strong>
+                    <p>Dùng sidebar để chuyển qua lại giữa các khu vực.</p>
+                </article>
             </div>
         </section>
     );
