@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface CategoryItem {
-    id: number;
+    id: string;
     name: string;
+    description: string;
     bgImage: string;
 }
 
@@ -10,15 +11,59 @@ interface CategoriesProps {
     items?: CategoryItem[];
 }
 
-const Categories: React.FC<CategoriesProps> = ({
-    items = [
-        { id: 1, name: "Fresh Fruit", bgImage: "img/categories/cat-1.jpg" },
-        { id: 2, name: "Dried Fruit", bgImage: "img/categories/cat-2.jpg" },
-        { id: 3, name: "Vegetables", bgImage: "img/categories/cat-3.jpg" },
-        { id: 4, name: "drink fruits", bgImage: "img/categories/cat-4.jpg" },
-        { id: 5, name: "drink fruits", bgImage: "img/categories/cat-5.jpg" },
-    ],
-}) => {
+const Categories: React.FC<CategoriesProps> = ({ items: initialItems }) => {
+    const [items, setItems] = useState<CategoryItem[]>(initialItems || []);
+    const [loading, setLoading] = useState(!initialItems);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (initialItems) return;
+
+        const fetchCategories = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch("/api/categories");
+                if (!response.ok) throw new Error("Failed to fetch categories");
+
+                const data = await response.json();
+                const categories = data.data.map((cat: any, index: number) => ({
+                    ...cat,
+                    bgImage: `img/categories/cat-${(index % 5) + 1}.jpg`,
+                }));
+
+                setItems(categories);
+            } catch (err) {
+                setError(
+                    err instanceof Error ? err.message : "An error occurred",
+                );
+                console.error("Error fetching categories:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, [initialItems]);
+
+    if (loading) {
+        return (
+            <section className="categories">
+                <div className="container">
+                    <div className="row">
+                        <div className="text-center py-5">
+                            Loading categories...
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    if (error) {
+        console.error("Categories error:", error);
+        return null;
+    }
+
     return (
         <section className="categories">
             <div className="container">

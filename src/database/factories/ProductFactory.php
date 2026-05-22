@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,6 +23,7 @@ class ProductFactory extends Factory
 		$imageIndexes = fake()->randomElements(range(1, 20), 2);
 
 		return [
+			'category_id' => Category::query()->inRandomOrder()->value('id') ?? Category::factory()->create()->id,
 			'name' => fake()->words(3, true),
 			'reviews' => fake()->numberBetween(0, 5000),
 			'price' => fake()->numberBetween(50000, 500000),

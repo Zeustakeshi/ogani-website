@@ -1,6 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import SearchBar from "@/components/ui/SearchBar";
+
+interface Category {
+    id: string;
+    name: string;
+    description: string;
+}
 
 const HeroBanner: React.FC = () => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch("/api/categories");
+                if (!response.ok) throw new Error("Failed to fetch categories");
+                const data = await response.json();
+                setCategories(data.data || []);
+            } catch (err) {
+                console.error("Error fetching categories:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
     return (
         <section className="hero">
             <div className="container">
@@ -8,70 +35,59 @@ const HeroBanner: React.FC = () => {
                     <div className="col-lg-3">
                         <div className="hero__categories">
                             <div className="hero__categories__all">
-                                <i className="fa fa-bars"></i>
-                                <span>All departments</span>
+                                <span style={{ fontSize: 15 }}>
+                                    Danh mục sản phẩm
+                                </span>
                             </div>
-                            <ul>
-                                <li>
-                                    <a href="#">Fresh Meat</a>
-                                </li>
-                                <li>
-                                    <a href="#">Vegetables</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fruit &amp; Nut Gifts</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fresh Berries</a>
-                                </li>
-                                <li>
-                                    <a href="#">Ocean Foods</a>
-                                </li>
-                                <li>
-                                    <a href="#">Butter &amp; Eggs</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fastfood</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fresh Onion</a>
-                                </li>
-                                <li>
-                                    <a href="#">Papayaya &amp; Crisps</a>
-                                </li>
-                                <li>
-                                    <a href="#">Oatmeal</a>
-                                </li>
-                                <li>
-                                    <a href="#">Fresh Bananas</a>
-                                </li>
+                            <ul
+                                style={{
+                                    maxHeight: "400px",
+                                    overflowY: "auto",
+                                    paddingRight: "8px",
+                                }}
+                            >
+                                {loading ? (
+                                    <li
+                                        style={{
+                                            padding: "10px",
+                                            color: "#999",
+                                        }}
+                                    >
+                                        Đang tải...
+                                    </li>
+                                ) : categories.length > 0 ? (
+                                    categories.map((cat) => (
+                                        <li key={cat.id}>
+                                            <a href={`/category/${cat.id}`}>
+                                                {cat.name}
+                                            </a>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li
+                                        style={{
+                                            padding: "10px",
+                                            color: "#999",
+                                        }}
+                                    >
+                                        Không có danh mục
+                                    </li>
+                                )}
                             </ul>
                         </div>
                     </div>
                     <div className="col-lg-9">
                         <div className="hero__search">
                             <div className="hero__search__form">
-                                <form action="#">
-                                    <div className="hero__search__categories">
-                                        All Categories
-                                        <span className="arrow_carrot-down"></span>
-                                    </div>
-                                    <input
-                                        type="text"
-                                        placeholder="What do yo u need?"
-                                    />
-                                    <button type="submit" className="site-btn">
-                                        SEARCH
-                                    </button>
-                                </form>
+                                <SearchBar />
                             </div>
                             <div className="hero__search__phone">
                                 <div className="hero__search__phone__icon">
                                     <i className="fa fa-phone"></i>
                                 </div>
                                 <div className="hero__search__phone__text">
-                                    <h5>+65 11.188.888</h5>
-                                    <span>support 24/7 time</span>
+                                    <h5>+84 123456789</h5>
+                                    <span>Hỗ trợ 24/7</span>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +103,7 @@ const HeroBanner: React.FC = () => {
                                 </h2>
                                 <p>Free Pickup and Delivery Available</p>
                                 <a href="#" className="primary-btn">
-                                    SHOP NOW
+                                    Mua ngay
                                 </a>
                             </div>
                         </div>

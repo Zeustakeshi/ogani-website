@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Product\ProductController;
+use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
@@ -11,11 +12,18 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{category}', [CategoryController::class, 'show']);
+
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
 	Route::middleware('admin')->group(function () {
+		Route::post('/categories', [CategoryController::class, 'store']);
+		Route::match(['put', 'patch'], '/categories/{category}', [CategoryController::class, 'update']);
+		Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+
 		Route::post('/products', [ProductController::class, 'store']);
 		Route::match(['put', 'patch'], '/products/{product}', [ProductController::class, 'update']);
 		Route::delete('/products/{product}', [ProductController::class, 'destroy']);

@@ -12,7 +12,7 @@ const HomePage: React.FC<HomePageProps> = () => {
     return (
         <>
             <HeroBanner />
-            <Categories />
+            {/* <Categories /> */}
             <FeaturedProducts />
             <section className="latest-product spad">
                 <div className="container">

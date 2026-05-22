@@ -20,8 +20,21 @@ class ProductController extends Controller
 	public function index(Request $request)
 	{
 		$perPage = max(1, (int) $request->integer('per_page', 12));
+		$categoryId = $request->string('category_id');
+		$search = $request->string('search');
 
-		return ProductResource::collection($this->productService->paginate($perPage));
+		$query = Product::query();
+
+		if ($categoryId) {
+			$query->where('category_id', $categoryId);
+		}
+
+		if ($search) {
+			$query->where('name', 'like', "%{$search}%")
+				->orWhere('description', 'like', "%{$search}%");
+		}
+
+		return ProductResource::collection($query->paginate($perPage));
 	}
 
 	public function store(StoreProductRequest $request)

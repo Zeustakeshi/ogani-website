@@ -6,6 +6,7 @@ import SortBar from "@/components/shop/SortBar";
 import { PATHS } from "@/router/paths";
 import api from "@/services/api";
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 type ShopProduct = {
     id: string;
@@ -24,12 +25,16 @@ type ProductListResponse = {
 };
 
 const ShopPage = () => {
+    const [searchParams] = useSearchParams();
     const [products, setProducts] = useState<ShopProduct[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+    const categoryId = searchParams.get("category_id");
+    const searchTerm = searchParams.get("search");
 
     const priceFormatter = useMemo(
         () =>
@@ -40,6 +45,10 @@ const ShopPage = () => {
     );
 
     useEffect(() => {
+        setCurrentPage(1);
+    }, [categoryId, searchTerm]);
+
+    useEffect(() => {
         let isActive = true;
 
         (async () => {
@@ -47,13 +56,22 @@ const ShopPage = () => {
             setErrorMessage(null);
 
             try {
+                const params: any = {
+                    page: currentPage,
+                    per_page: 9,
+                };
+
+                if (categoryId) {
+                    params.category_id = categoryId;
+                }
+                if (searchTerm) {
+                    params.search = searchTerm;
+                }
+
                 const response = await api.get<ProductListResponse>(
                     "/products",
                     {
-                        params: {
-                            page: currentPage,
-                            per_page: 9,
-                        },
+                        params,
                     },
                 );
 
@@ -84,7 +102,7 @@ const ShopPage = () => {
         return () => {
             isActive = false;
         };
-    }, [currentPage]);
+    }, [currentPage, categoryId, searchTerm]);
 
     const productItems = products.map((product) => ({
         id: product.id,

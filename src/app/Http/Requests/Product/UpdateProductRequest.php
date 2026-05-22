@@ -19,6 +19,7 @@ class UpdateProductRequest extends FormRequest
 	public function rules(): array
 	{
 		return [
+			'category_id' => ['sometimes', 'string', 'exists:categories,id'],
 			'name' => ['sometimes', 'string', 'max:255'],
 			'reviews' => ['sometimes', 'integer', 'min:0'],
 			'price' => ['sometimes', 'integer', 'min:0'],
