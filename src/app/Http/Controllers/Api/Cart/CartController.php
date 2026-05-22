@@ -11,32 +11,51 @@ use App\Models\Product;
 use App\Models\ProductCart;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    private function getOrCreateCart(Request $request): Cart
     {
-        $user = $request->user();
-
-        $cart = Cart::with('items.product')->firstOrCreate(
-            ['user_id' => $user->id],
+        return Cart::firstOrCreate(
+            ['user_id' => $request->user()->id],
             ['id' => (string) Str::uuid()]
         );
+    }
+
+    public function index(Request $request): AnonymousResourceCollection
+    {
+        $perPage = max(1, min(50, $request->integer('per_page', 6)));
+        $cart = $this->getOrCreateCart($request);
+        $items = $cart->items()
+            ->with('product')
+            ->latest('created_at')
+            ->paginate($perPage);
+
+        return CartItemResource::collection($items);
+    }
+
+    public function summary(Request $request): JsonResponse
+    {
+        $cart = $this->getOrCreateCart($request)->load('items.product');
+
+        $itemCount = (int) $cart->items->sum('amount');
+        $total = (int) $cart->items->sum(function (ProductCart $item): int {
+            return $item->amount * (int) ($item->product?->price ?? 0);
+        });
 
         return response()->json([
-            'data' => CartItemResource::collection($cart->items),
+            'data' => [
+                'item_count' => $itemCount,
+                'total' => $total,
+            ],
         ]);
     }
 
     public function store(StoreCartItemRequest $request): JsonResponse
     {
-        $user = $request->user();
-
-        $cart = Cart::firstOrCreate(
-            ['user_id' => $user->id],
-            ['id' => (string) Str::uuid()]
-        );
+        $cart = $this->getOrCreateCart($request);
 
         $product = Product::findOrFail($request->product_id);
 
@@ -54,9 +73,7 @@ class CartController extends Controller
 
     public function update(UpdateCartItemRequest $request, Product $product): JsonResponse
     {
-        $user = $request->user();
-
-        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+        $cart = Cart::where('user_id', $request->user()->id)->firstOrFail();
 
         $item = ProductCart::where('cart_id', $cart->id)
             ->where('product_id', $product->id)
@@ -71,9 +88,7 @@ class CartController extends Controller
 
     public function destroy(Request $request, Product $product): JsonResponse
     {
-        $user = $request->user();
-
-        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+        $cart = Cart::where('user_id', $request->user()->id)->firstOrFail();
 
         $item = ProductCart::where('cart_id', $cart->id)
             ->where('product_id', $product->id)

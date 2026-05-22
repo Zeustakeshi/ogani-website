@@ -31,7 +31,7 @@ const Pagination: React.FC<PaginationProps> = ({
     return (
         <div className="pagination-option">
             <div className="product-count">
-                <span>{totalCount} Products found</span>
+                <span>{totalCount} sản phẩm được tìm thấy</span>
             </div>
             <div className="product-pagination product__pagination">
                 {pages.map((page) => (

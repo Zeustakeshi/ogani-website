@@ -58,6 +58,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
                             className="col-lg-3 col-md-4 col-sm-6"
                         >
                             <ProductCard
+                                productId={product.id}
                                 image={product.image}
                                 title={product.title}
                                 price={product.price}

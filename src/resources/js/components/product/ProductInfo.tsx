@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import api from "@/services/api";
 import { ProductReviewItem } from "./ProductReviewList";
 
 interface ProductInfoProps {
@@ -40,39 +41,23 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         onQuantityChange?.(safeQuantity);
     };
 
-    const addToCart = (e?: React.MouseEvent) => {
+    const addToCart = async (e?: React.MouseEvent<HTMLAnchorElement>) => {
         e?.preventDefault();
 
-        const item = {
-            id: productId,
-            title,
-            price,
-            quantity: currentQuantity,
-            image,
-        };
-
         try {
-            const raw = localStorage.getItem("cart");
-            const cart = raw ? JSON.parse(raw) : [];
-
-            // If product exists, increment quantity
-            const existing = cart.find((c: any) => c.id === item.id);
-            if (existing) {
-                existing.quantity = (existing.quantity || 0) + item.quantity;
-            } else {
-                cart.push(item);
+            if (!productId) {
+                return;
             }
 
-            localStorage.setItem("cart", JSON.stringify(cart));
+            await api.post("/cart/items", {
+                product_id: productId,
+                amount: currentQuantity,
+            });
 
-            // Emit custom event so other parts can react
-            window.dispatchEvent(
-                new CustomEvent("cart:updated", { detail: { cart } }),
-            );
+            window.dispatchEvent(new Event("cart:updated"));
 
-            // quick feedback
             // eslint-disable-next-line no-alert
-            alert(`${item.title} (x${item.quantity}) added to cart`);
+            alert(`${title} (x${currentQuantity}) added to cart`);
         } catch (err) {
             // eslint-disable-next-line no-console
             console.error("Failed to add to cart", err);

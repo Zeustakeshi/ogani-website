@@ -6,6 +6,10 @@ interface CartSummaryProps {
     total?: number;
     onCheckout?: () => void;
     checkoutHref?: string;
+    title?: string;
+    subtotalLabel?: string;
+    totalLabel?: string;
+    checkoutText?: string;
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({
@@ -13,7 +17,15 @@ const CartSummary: React.FC<CartSummaryProps> = ({
     total = 454.98,
     checkoutHref = "/checkout",
     onCheckout,
+    title = "Cart Total",
+    subtotalLabel = "Subtotal",
+    totalLabel = "Total",
+    checkoutText = "PROCEED TO CHECKOUT",
 }) => {
+    const priceFormatter = new Intl.NumberFormat("vi-VN", {
+        maximumFractionDigits: 0,
+    });
+
     const handleCheckout = (event: React.MouseEvent<HTMLAnchorElement>) => {
         onCheckout?.();
 
@@ -24,13 +36,15 @@ const CartSummary: React.FC<CartSummaryProps> = ({
 
     return (
         <div className="shoping__checkout">
-            <h6>Cart Total</h6>
+            <h6>{title}</h6>
             <ul>
                 <li>
-                    Subtotal <span>${subtotal.toFixed(2)}</span>
+                    {subtotalLabel}{" "}
+                    <span>{`${priceFormatter.format(subtotal)}đ`}</span>
                 </li>
                 <li>
-                    Total <span>${total.toFixed(2)}</span>
+                    {totalLabel}{" "}
+                    <span>{`${priceFormatter.format(total)}đ`}</span>
                 </li>
             </ul>
             <Link
@@ -38,7 +52,7 @@ const CartSummary: React.FC<CartSummaryProps> = ({
                 className="primary-btn"
                 onClick={handleCheckout}
             >
-                PROCEED TO CHECKOUT
+                {checkoutText}
             </Link>
         </div>
     );

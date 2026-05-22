@@ -23,6 +23,7 @@ Route::get('/products/{product}/reviews', [ProductReviewController::class, 'inde
 
 Route::middleware('auth:sanctum')->group(function () {
 	Route::get('/cart', [CartController::class, 'index']);
+	Route::get('/cart/summary', [CartController::class, 'summary']);
 	Route::post('/cart/items', [CartController::class, 'store']);
 	Route::match(['put', 'patch'], '/cart/items/{product}', [CartController::class, 'update']);
 	Route::delete('/cart/items/{product}', [CartController::class, 'destroy']);

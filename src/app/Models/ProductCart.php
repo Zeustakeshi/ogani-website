@@ -10,6 +10,8 @@ class ProductCart extends Model
 {
     use HasFactory;
 
+    protected $table = 'product_cart';
+
     public $incrementing = false;
     protected $primaryKey = null;
     protected $keyType = 'string';

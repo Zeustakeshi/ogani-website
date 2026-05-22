@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import api from "@/services/api";
 
 interface ProductCardProps {
+    productId?: string;
     image: string;
     title: string;
     price: string;
@@ -11,6 +13,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+    productId,
     image,
     title,
     price,
@@ -18,6 +21,28 @@ const ProductCard: React.FC<ProductCardProps> = ({
     onSale = false,
     link = "#",
 }) => {
+    const handleAddToCart = async (
+        event: React.MouseEvent<HTMLAnchorElement>,
+    ) => {
+        event.preventDefault();
+
+        if (!productId) {
+            return;
+        }
+
+        try {
+            await api.post("/cart/items", {
+                product_id: productId,
+                amount: 1,
+            });
+
+            window.dispatchEvent(new Event("cart:updated"));
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error("Failed to add product to cart", error);
+        }
+    };
+
     return (
         <div className={`product__item ${onSale ? "sale__item" : ""}`}>
             <div className={`product__item__pic set-bg`}>
@@ -49,7 +74,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="#" onClick={handleAddToCart}>
                             <i className="fa fa-shopping-cart"></i>
                         </a>
                     </li>

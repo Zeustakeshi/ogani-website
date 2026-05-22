@@ -19,6 +19,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products = [] }) => {
             {products.map((product) => (
                 <div key={product.id} className="col-lg-4 col-md-6 col-sm-6">
                     <ProductCard
+                        productId={String(product.id)}
                         image={product.image}
                         title={product.title}
                         price={product.price}

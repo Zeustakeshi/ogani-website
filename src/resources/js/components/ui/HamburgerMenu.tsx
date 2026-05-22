@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { PATHS } from "@/router/paths";
+import CartIcon from "@/components/ui/CartIcon";
 
 interface HamburgerMenuProps {
     isOpen?: boolean;
@@ -17,24 +18,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ isOpen, onClose }) => {
                         <img src="img/logo.png" alt="" />
                     </a>
                 </div>
-                <div className="humberger__menu__cart">
-                    <ul>
-                        <li>
-                            <a href="#">
-                                <i className="fa fa-heart"></i> <span>1</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i className="fa fa-shopping-bag"></i>{" "}
-                                <span>3</span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div className="header__cart__price">
-                        item: <span>$150.00</span>
-                    </div>
-                </div>
+                <CartIcon className="humberger__menu__cart" />
                 <div className="humberger__menu__widget">
                     <div className="header__top__right__language">
                         <img src="img/language.png" alt="" />

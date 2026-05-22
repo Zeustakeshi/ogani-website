@@ -2,6 +2,7 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { PATHS } from "@/router/paths";
 import { useAuth } from "@/context/AuthContext";
+import CartIcon from "@/components/ui/CartIcon";
 
 interface HeaderProps {}
 
@@ -148,25 +149,7 @@ const Header: React.FC<HeaderProps> = () => {
 
                     {/* Cart */}
                     <div className="col-lg-3">
-                        <div className="header__cart">
-                            <ul>
-                                <li>
-                                    <a href="#">
-                                        <i className="fa fa-heart"></i>{" "}
-                                        <span>1</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i className="fa fa-shopping-bag"></i>{" "}
-                                        <span>3</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <div className="header__cart__price">
-                                item: <span>$150.00</span>
-                            </div>
-                        </div>
+                        <CartIcon />
                     </div>
                 </div>
 

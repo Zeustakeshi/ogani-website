@@ -1,7 +1,7 @@
 import React from "react";
 
 interface CartItem {
-    id: number;
+    id: string;
     image: string;
     title: string;
     price: number;
@@ -11,68 +11,61 @@ interface CartItem {
 
 interface CartTableProps {
     items?: CartItem[];
-    onQuantityChange?: (id: number, quantity: number) => void;
-    onRemove?: (id: number) => void;
+    onQuantityChange?: (id: string, quantity: number) => void;
+    onRemove?: (id: string) => void;
 }
 
 const CartTable: React.FC<CartTableProps> = ({
-    items = [
-        {
-            id: 1,
-            image: "/img/cart/cart-1.jpg",
-            title: "Vegetable’s Package",
-            price: 55.0,
-            quantity: 1,
-            total: 110.0,
-        },
-        {
-            id: 2,
-            image: "/img/cart/cart-2.jpg",
-            title: "Fresh Garden Vegetable",
-            price: 39.0,
-            quantity: 1,
-            total: 39.99,
-        },
-        {
-            id: 3,
-            image: "/img/cart/cart-3.jpg",
-            title: "Organic Bananas",
-            price: 69.0,
-            quantity: 1,
-            total: 69.99,
-        },
-    ],
+    items = [],
     onQuantityChange,
     onRemove,
 }) => {
+    const priceFormatter = new Intl.NumberFormat("vi-VN", {
+        maximumFractionDigits: 0,
+    });
+
     return (
         <div className="shoping__cart__table">
             <table>
                 <thead>
                     <tr>
-                        <th className="shoping__product">Products</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                        <th></th>
+                        <th className="shoping__product">Sản phẩm</th>
+                        <th>Đơn giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                        <th>Xóa</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {items.length === 0 && (
+                        <tr>
+                            <td colSpan={5} style={{ textAlign: "center" }}>
+                                Giỏ hàng của bạn đang trống.
+                            </td>
+                        </tr>
+                    )}
                     {items.map((item) => (
                         <tr key={item.id}>
                             <td className="shoping__cart__item">
-                                <img src={item.image} alt={item.title} />
+                                <img
+                                    src={item.image}
+                                    style={{
+                                        width: 100,
+                                        height: 100,
+                                    }}
+                                    alt={item.title}
+                                />
                                 <h5>{item.title}</h5>
                             </td>
                             <td className="shoping__cart__price">
-                                ${item.price.toFixed(2)}
+                                {`${priceFormatter.format(item.price)}đ`}
                             </td>
                             <td className="shoping__cart__quantity">
                                 <div className="quantity">
                                     <div className="pro-qty">
                                         <input
                                             type="text"
-                                            defaultValue={item.quantity}
+                                            value={item.quantity}
                                             onChange={(e) => {
                                                 const quantity = Number(
                                                     e.target.value,
@@ -90,7 +83,7 @@ const CartTable: React.FC<CartTableProps> = ({
                                 </div>
                             </td>
                             <td className="shoping__cart__total">
-                                ${item.total.toFixed(2)}
+                                {`${priceFormatter.format(item.total)}đ`}
                             </td>
                             <td className="shoping__cart__item__close">
                                 <span
