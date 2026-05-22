@@ -13,11 +13,21 @@ type AdminProductDetail = {
     reviews: number;
     weight: number;
     images: string[];
+    category_id: string;
 };
 
 type ProductDetailResponse = {
     data?: AdminProductDetail;
 } & AdminProductDetail;
+
+type Category = {
+    id: string;
+    name: string;
+};
+
+type CategoryListResponse = {
+    data: Category[];
+};
 
 type ProductFormState = {
     name: string;
@@ -25,6 +35,7 @@ type ProductFormState = {
     description: string;
     weight: string;
     isAvailability: boolean;
+    categoryId: string;
 };
 
 const fallbackImage = "/img/product/details/product-details-1.jpg";
@@ -47,18 +58,21 @@ const normalizeProduct = (
         reviews: Number(product.reviews ?? 0),
         weight: Number(product.weight ?? 0),
         images: Array.isArray(product.images) ? product.images : [],
+        category_id: String(product.category_id ?? ""),
     };
 };
 
 const AdminProductDetailPage: React.FC = () => {
     const { id } = useParams();
     const [product, setProduct] = useState<AdminProductDetail | null>(null);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [formState, setFormState] = useState<ProductFormState>({
         name: "",
         price: "",
         description: "",
         weight: "",
         isAvailability: true,
+        categoryId: "",
     });
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -108,6 +122,7 @@ const AdminProductDetailPage: React.FC = () => {
                         description: "",
                         weight: "",
                         isAvailability: true,
+                        categoryId: "",
                     });
                     return;
                 }
@@ -119,6 +134,7 @@ const AdminProductDetailPage: React.FC = () => {
                     description: normalizedProduct.description,
                     weight: String(normalizedProduct.weight),
                     isAvailability: normalizedProduct.is_availability,
+                    categoryId: normalizedProduct.category_id,
                 });
             } catch {
                 if (isActive) {
@@ -132,6 +148,7 @@ const AdminProductDetailPage: React.FC = () => {
                         description: "",
                         weight: "",
                         isAvailability: true,
+                        categoryId: "",
                     });
                 }
             } finally {
@@ -146,6 +163,37 @@ const AdminProductDetailPage: React.FC = () => {
         };
     }, [id]);
 
+    useEffect(() => {
+        let isActive = true;
+
+        (async () => {
+            try {
+                const response = await api.get<CategoryListResponse>(
+                    "/categories",
+                    {
+                        params: {
+                            per_page: 100,
+                        },
+                    },
+                );
+
+                if (!isActive) {
+                    return;
+                }
+
+                setCategories(response.data?.data ?? []);
+            } catch {
+                if (isActive) {
+                    console.warn("Không thể tải danh sách category.");
+                }
+            }
+        })();
+
+        return () => {
+            isActive = false;
+        };
+    }, []);
+
     const hasChanges =
         Boolean(product) &&
         (formState.name.trim() !== (product?.name ?? "").trim() ||
@@ -153,7 +201,8 @@ const AdminProductDetailPage: React.FC = () => {
             formState.description.trim() !==
                 (product?.description ?? "").trim() ||
             formState.weight.trim() !== String(product?.weight ?? "") ||
-            formState.isAvailability !== (product?.is_availability ?? true));
+            formState.isAvailability !== (product?.is_availability ?? true) ||
+            formState.categoryId !== (product?.category_id ?? ""));
 
     const handleSave = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -175,6 +224,7 @@ const AdminProductDetailPage: React.FC = () => {
                     description: formState.description.trim(),
                     weight: Number(formState.weight),
                     is_availability: formState.isAvailability,
+                    category_id: formState.categoryId,
                 },
                 { suppressUnauthorizedRedirect: true } as any,
             );
@@ -189,6 +239,7 @@ const AdminProductDetailPage: React.FC = () => {
                     description: updatedProduct.description,
                     weight: String(updatedProduct.weight),
                     isAvailability: updatedProduct.is_availability,
+                    categoryId: updatedProduct.category_id,
                 });
             }
 
@@ -338,16 +389,35 @@ const AdminProductDetailPage: React.FC = () => {
                                 </div>
 
                                 <div className="admin-auth-page__field">
-                                    <label htmlFor="admin-product-code">
-                                        Mã sản phẩm
+                                    <label htmlFor="admin-product-category">
+                                        Danh mục
                                     </label>
-                                    <input
-                                        id="admin-product-code"
-                                        value={product.id}
-                                        disabled
-                                        readOnly
-                                        style={{ ...inputStyle }}
-                                    />
+                                    <select
+                                        id="admin-product-category"
+                                        value={formState.categoryId}
+                                        onChange={(event) =>
+                                            setFormState((current) => ({
+                                                ...current,
+                                                categoryId: event.target.value,
+                                            }))
+                                        }
+                                        style={{
+                                            ...inputStyle,
+                                            padding: "0 14px",
+                                        }}
+                                    >
+                                        <option value="" disabled>
+                                            Chọn danh mục sản phẩm
+                                        </option>
+                                        {categories.map((category) => (
+                                            <option
+                                                key={category.id}
+                                                value={category.id}
+                                            >
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
 
                                 <div className="admin-auth-page__field">
