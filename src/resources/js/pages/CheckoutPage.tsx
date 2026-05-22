@@ -1,6 +1,12 @@
 import CheckoutLayout from "@/components/checkout/CheckoutLayout";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import api from "@/services/api";
+import {
+    clearStoredCouponCode,
+    getStoredCouponCode,
+    validateCouponCode,
+    type CouponInfo,
+} from "@/services/coupon";
 import { createMomoCheckout } from "@/services/payment";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -53,6 +59,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
     const [items, setItems] = useState<CheckoutItem[]>([]);
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
+    const [appliedCoupon, setAppliedCoupon] = useState<CouponInfo | null>(null);
     const [billingForm, setBillingForm] = useState<CheckoutFormState>({
         address: "",
         orderNote: "",
@@ -102,13 +109,12 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
                     (sum, item) => sum + item.price,
                     0,
                 );
-
-                setSubtotal(calculatedSubtotal);
-                setTotal(
-                    Number(
-                        summaryResponse.data?.data?.total ?? calculatedSubtotal,
-                    ),
+                const summaryTotal = Number(
+                    summaryResponse.data?.data?.total ?? calculatedSubtotal,
                 );
+
+                setSubtotal(summaryTotal);
+                setTotal(summaryTotal);
             } catch {
                 if (isActive) {
                     setErrorMessage(
@@ -130,6 +136,50 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
         };
     }, []);
 
+    useEffect(() => {
+        let isActive = true;
+
+        (async () => {
+            const storedCouponCode = getStoredCouponCode();
+
+            if (!storedCouponCode) {
+                return;
+            }
+
+            try {
+                const coupon = await validateCouponCode(storedCouponCode);
+
+                if (!isActive) {
+                    return;
+                }
+
+                if (coupon) {
+                    setAppliedCoupon(coupon);
+                } else {
+                    clearStoredCouponCode();
+                    setAppliedCoupon(null);
+                }
+            } catch {
+                if (isActive) {
+                    clearStoredCouponCode();
+                    setAppliedCoupon(null);
+                }
+            }
+        })();
+
+        return () => {
+            isActive = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        const discountAmount = appliedCoupon
+            ? Math.round((subtotal * appliedCoupon.discount_percent) / 100)
+            : 0;
+
+        setTotal(Math.max(0, subtotal - discountAmount));
+    }, [appliedCoupon, subtotal]);
+
     const handlePlaceOrder = async () => {
         if (!billingForm.address.trim()) {
             setErrorMessage("Vui lòng nhập địa chỉ giao hàng.");
@@ -143,6 +193,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
             const response = await createMomoCheckout({
                 address: billingForm.address,
                 note: billingForm.orderNote,
+                couponCode: appliedCoupon?.code,
             });
             const payUrl = response.data?.data?.payUrl;
 
@@ -168,6 +219,22 @@ const CheckoutPage: React.FC<CheckoutPageProps> = () => {
     return (
         <>
             <Breadcrumb items={breadcrumbItems} />
+            {appliedCoupon ? (
+                <div className="container" style={{ marginBottom: 24 }}>
+                    <div
+                        style={{
+                            padding: "14px 18px",
+                            background: "rgba(127, 173, 57, 0.10)",
+                            border: "1px solid rgba(127, 173, 57, 0.22)",
+                            color: "#4f7d1f",
+                            fontWeight: 600,
+                        }}
+                    >
+                        Đang áp dụng coupon {appliedCoupon.code} (-
+                        {appliedCoupon.discount_percent}%).
+                    </div>
+                </div>
+            ) : null}
             <CheckoutLayout
                 items={items}
                 subtotal={subtotal}

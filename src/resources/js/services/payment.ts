@@ -23,6 +23,7 @@ export type MomoCallbackPayload = Record<string, string>;
 export type MomoCreateCheckoutPayload = {
     address: string;
     note?: string;
+    couponCode?: string;
 };
 
 export const createMomoCheckout = (payload: MomoCreateCheckoutPayload) => {

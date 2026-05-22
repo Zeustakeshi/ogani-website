@@ -3,6 +3,7 @@
 namespace App\Services\Payment;
 
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductCart;
@@ -10,6 +11,8 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
@@ -70,6 +73,23 @@ class MomoService
             return $item->amount * (int) ($item->product?->price ?? 0);
         });
 
+        $couponCode = strtoupper(trim((string) ($input['coupon_code'] ?? '')));
+        $coupon = null;
+
+        if ($couponCode !== '') {
+            $coupon = Coupon::query()
+                ->whereRaw('LOWER(code) = ?', [strtolower($couponCode)])
+                ->where('expire_at', '>=', now())
+                ->first();
+
+            if (! $coupon) {
+                throw new InvalidArgumentException('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+            }
+
+            $discountAmount = (int) round($total * ((int) $coupon->discount_percent / 100));
+            $total = max(0, $total - $discountAmount);
+        }
+
         if ($total <= 0) {
             throw new RuntimeException('Không thể tạo thanh toán cho giỏ hàng không hợp lệ.');
         }
@@ -81,11 +101,12 @@ class MomoService
             throw new InvalidArgumentException('Vui lòng nhập địa chỉ giao hàng.');
         }
 
-        $order = DB::transaction(function () use ($user, $items, $total, $address, $note): Order {
+        $order = DB::transaction(function () use ($user, $items, $total, $address, $note, $couponCode): Order {
             $order = Order::query()->create([
                 'user_id' => $user->id,
                 'status' => Order::STATUS_PENDING,
                 'total' => $total,
+                'coupon_code' => $couponCode !== '' ? $couponCode : null,
                 'address' => $address,
                 'note' => $note !== '' ? $note : null,
                 'created_at' => now(),
@@ -181,30 +202,47 @@ class MomoService
         if ($resultCode === 0) {
             DB::transaction(function () use ($order, $payload): void {
                 $order->loadMissing('items');
+                $hasInventoryColumn = Schema::hasColumn('products', 'inventory');
 
-                foreach ($order->items as $item) {
-                    $product = Product::query()
-                        ->whereKey($item->product_id)
-                        ->lockForUpdate()
-                        ->first();
+                if ($hasInventoryColumn) {
+                    foreach ($order->items as $item) {
+                        $product = Product::query()
+                            ->whereKey($item->product_id)
+                            ->lockForUpdate()
+                            ->first();
 
-                    if (! $product) {
-                        throw new RuntimeException(sprintf(
-                            'Không tìm thấy sản phẩm %s trong đơn hàng.',
-                            $item->product_id,
-                        ));
+                        if (! $product) {
+                            Log::warning('MoMo callback: product not found while updating inventory.', [
+                                'order_id' => $order->id,
+                                'product_id' => $item->product_id,
+                            ]);
+
+                            continue;
+                        }
+
+                        if ((int) $product->inventory < (int) $item->amount) {
+                            Log::warning('MoMo callback: insufficient inventory while updating order.', [
+                                'order_id' => $order->id,
+                                'product_id' => $item->product_id,
+                                'inventory' => (int) $product->inventory,
+                                'amount' => (int) $item->amount,
+                            ]);
+
+                            continue;
+                        }
+
+                        try {
+                            $product->forceFill([
+                                'inventory' => (int) $product->inventory - (int) $item->amount,
+                            ])->save();
+                        } catch (\Throwable $throwable) {
+                            Log::warning('MoMo callback: failed to persist inventory update.', [
+                                'order_id' => $order->id,
+                                'product_id' => $item->product_id,
+                                'error' => $throwable->getMessage(),
+                            ]);
+                        }
                     }
-
-                    if ((int) $product->inventory < (int) $item->amount) {
-                        throw new RuntimeException(sprintf(
-                            'Sản phẩm %s không đủ tồn kho để hoàn tất đơn hàng.',
-                            $product->name,
-                        ));
-                    }
-
-                    $product->forceFill([
-                        'inventory' => (int) $product->inventory - (int) $item->amount,
-                    ])->save();
                 }
 
                 $order->forceFill([

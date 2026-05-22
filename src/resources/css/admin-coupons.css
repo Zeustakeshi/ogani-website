@@ -1,0 +1,124 @@
+.admin-page__coupon-grid {
+	display: grid;
+	grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+	gap: 24px;
+}
+
+.admin-page__coupon-panel {
+	background: #ffffff;
+	border: 1px solid rgba(28, 28, 28, 0.06);
+	box-shadow: 0 16px 34px rgba(28, 28, 28, 0.06);
+	padding: 28px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.admin-page__coupon-panel h2 {
+	font-size: 24px;
+	font-weight: 700;
+	color: #1c1c1c;
+	margin-bottom: 8px;
+}
+
+.admin-page__coupon-panel p {
+	font-size: 15px;
+	line-height: 24px;
+	margin-bottom: 0;
+}
+
+.admin-page__form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+}
+
+.admin-page__form-grid--full {
+	grid-column: 1 / -1;
+}
+
+.admin-page__coupon-panel textarea {
+	width: 100%;
+	border: 1px solid #dfe7d2;
+	border-radius: 0;
+	padding: 18px;
+	font-size: 15px;
+	color: #1c1c1c;
+	resize: vertical;
+}
+
+.admin-page__action-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: #7fad39;
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	padding: 8px 12px;
+	border-radius: 0;
+}
+
+.admin-page__action-link:hover {
+	color: #ffffff;
+	opacity: 0.9;
+}
+
+.admin-page__danger-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	background: #e53935;
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	padding: 8px 12px;
+	border-radius: 0;
+	margin-left: 8px;
+	cursor: pointer;
+}
+
+.admin-page__danger-link:hover {
+	color: #ffffff;
+	opacity: 0.9;
+}
+
+.admin-page__table-card--coupons .admin-page__table-head,
+.admin-page__table-card--coupons .admin-page__table-row {
+	grid-template-columns: 1fr 1.2fr 0.9fr 1fr 1.6fr 0.8fr;
+}
+
+.admin-page__table-cell-wrap {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.admin-page__table-cell-wrap span {
+	font-size: 13px;
+	line-height: 20px;
+	word-break: break-word;
+}
+
+.admin-page__empty-state {
+	padding: 22px 24px;
+	font-size: 15px;
+	color: #6f6f6f;
+}
+
+@media only screen and (max-width: 1199px) {
+	.admin-page__coupon-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.admin-page__form-grid {
+		grid-template-columns: 1fr;
+	}
+}

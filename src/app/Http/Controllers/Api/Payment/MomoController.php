@@ -22,6 +22,7 @@ class MomoController extends Controller
             $result = $this->momoService->createCheckout($request->user(), [
                 'address' => (string) $request->input('address', ''),
                 'note' => (string) $request->input('note', ''),
+                'coupon_code' => (string) $request->input('couponCode', ''),
             ]);
 
             return response()->json([

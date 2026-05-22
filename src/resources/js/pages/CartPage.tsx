@@ -5,6 +5,13 @@ import CouponInput from "@/components/cart/CouponInput";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import Pagination from "@/components/ui/Pagination";
 import api from "@/services/api";
+import {
+    clearStoredCouponCode,
+    getStoredCouponCode,
+    storeCouponCode,
+    validateCouponCode,
+    type CouponInfo,
+} from "@/services/coupon";
 import { PATHS } from "@/router/paths";
 import React, { useEffect, useState } from "react";
 
@@ -62,7 +69,13 @@ const CartPage: React.FC<CartPageProps> = () => {
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
     const [refreshTick, setRefreshTick] = useState(0);
+    const [appliedCoupon, setAppliedCoupon] = useState<CouponInfo | null>(null);
+    const [couponFeedback, setCouponFeedback] = useState<string | null>(null);
+    const [couponFeedbackTone, setCouponFeedbackTone] = useState<
+        "success" | "error" | "info" | null
+    >(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const hasUnsavedChanges = items.some(
@@ -123,13 +136,16 @@ const CartPage: React.FC<CartPageProps> = () => {
                     (sum, item) => sum + item.total,
                     0,
                 );
+                const summaryTotal = Number(
+                    summary?.total ?? calculatedSubtotal,
+                );
 
                 setItems(normalizedItems);
                 setCurrentPage(Number(meta?.current_page ?? currentPage));
                 setTotalPages(Number(meta?.last_page ?? 1));
                 setTotalCount(Number(meta?.total ?? normalizedItems.length));
-                setSubtotal(calculatedSubtotal);
-                setTotal(Number(summary?.total ?? 0));
+                setSubtotal(summaryTotal);
+                setTotal(summaryTotal);
             } catch {
                 if (isActive) {
                     setErrorMessage(
@@ -150,6 +166,58 @@ const CartPage: React.FC<CartPageProps> = () => {
             isActive = false;
         };
     }, [currentPage, refreshTick]);
+
+    useEffect(() => {
+        let isActive = true;
+
+        (async () => {
+            const storedCouponCode = getStoredCouponCode();
+
+            if (!storedCouponCode) {
+                return;
+            }
+
+            try {
+                const coupon = await validateCouponCode(storedCouponCode);
+
+                if (!isActive) {
+                    return;
+                }
+
+                if (coupon) {
+                    setAppliedCoupon(coupon);
+                    setCouponFeedback(
+                        `Đã áp dụng coupon ${coupon.code} (-${coupon.discount_percent}%).`,
+                    );
+                    setCouponFeedbackTone("success");
+                } else {
+                    clearStoredCouponCode();
+                    setAppliedCoupon(null);
+                }
+            } catch {
+                if (isActive) {
+                    clearStoredCouponCode();
+                    setAppliedCoupon(null);
+                    setCouponFeedback(
+                        "Coupon đã lưu không còn hợp lệ. Vui lòng nhập lại.",
+                    );
+                    setCouponFeedbackTone("error");
+                }
+            }
+        })();
+
+        return () => {
+            isActive = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        const discountAmount = appliedCoupon
+            ? Math.round((subtotal * appliedCoupon.discount_percent) / 100)
+            : 0;
+
+        setTotal(Math.max(0, subtotal - discountAmount));
+    }, [appliedCoupon, subtotal]);
 
     const reloadCart = () => {
         setRefreshTick((value) => value + 1);
@@ -180,6 +248,46 @@ const CartPage: React.FC<CartPageProps> = () => {
             setErrorMessage(
                 "Không thể xóa sản phẩm khỏi giỏ hàng. Vui lòng thử lại.",
             );
+        }
+    };
+
+    const handleApplyCoupon = async (code: string) => {
+        const normalizedCode = code.trim().toUpperCase();
+
+        if (!normalizedCode) {
+            setCouponFeedback("Vui lòng nhập mã coupon.");
+            setCouponFeedbackTone("error");
+            return;
+        }
+
+        setIsApplyingCoupon(true);
+        setCouponFeedback(null);
+        setCouponFeedbackTone(null);
+
+        try {
+            const coupon = await validateCouponCode(normalizedCode);
+
+            if (!coupon) {
+                throw new Error("Coupon không hợp lệ.");
+            }
+
+            storeCouponCode(coupon.code);
+            setAppliedCoupon(coupon);
+            setCouponFeedback(
+                `Đã áp dụng coupon ${coupon.code} (-${coupon.discount_percent}%).`,
+            );
+            setCouponFeedbackTone("success");
+        } catch (error: any) {
+            clearStoredCouponCode();
+            setAppliedCoupon(null);
+            setCouponFeedback(
+                error?.response?.data?.message ||
+                    error?.message ||
+                    "Coupon không hợp lệ hoặc đã hết hạn.",
+            );
+            setCouponFeedbackTone("error");
+        } finally {
+            setIsApplyingCoupon(false);
         }
     };
 
@@ -269,7 +377,26 @@ const CartPage: React.FC<CartPageProps> = () => {
                     <div className="row">
                         <div className="col-lg-6">
                             <div className="shoping__continue">
-                                <CouponInput />
+                                <CouponInput
+                                    onApply={handleApplyCoupon}
+                                    isApplying={isApplyingCoupon}
+                                    feedbackMessage={couponFeedback}
+                                    feedbackTone={couponFeedbackTone}
+                                />
+                                {appliedCoupon ? (
+                                    <p
+                                        style={{
+                                            marginTop: 12,
+                                            marginBottom: 0,
+                                            fontSize: 14,
+                                            fontWeight: 600,
+                                            color: "#4f7d1f",
+                                        }}
+                                    >
+                                        Coupon hiện tại: {appliedCoupon.code} -
+                                        giảm {appliedCoupon.discount_percent}%
+                                    </p>
+                                ) : null}
                             </div>
                         </div>
                         <div className="col-lg-6">

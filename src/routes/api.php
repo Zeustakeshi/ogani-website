@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\ProductReview\ProductReviewController;
 use App\Http\Controllers\Api\Category\CategoryController;
+use App\Http\Controllers\Api\Coupon\CouponController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Order\OrderController;
@@ -19,6 +20,8 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
+
+Route::post('/coupons/validate', [CouponController::class, 'validateCoupon']);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
@@ -42,6 +45,12 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::post('/categories', [CategoryController::class, 'store']);
 		Route::match(['put', 'patch'], '/categories/{category}', [CategoryController::class, 'update']);
 		Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+		Route::get('/coupons', [CouponController::class, 'index']);
+		Route::get('/coupons/{coupon}', [CouponController::class, 'show']);
+
+		Route::post('/coupons', [CouponController::class, 'store']);
+		Route::match(['put', 'patch'], '/coupons/{coupon}', [CouponController::class, 'update']);
+		Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
 
 		Route::get('/admin/orders', [AdminOrderController::class, 'index']);
 

@@ -17,6 +17,8 @@ import AdminDashboardPage from "../pages/AdminDashboardPage";
 import AdminProductsPage from "../pages/AdminProductsPage";
 import AdminProductDetailPage from "@/pages/AdminProductDetailPage";
 import AdminOrdersPage from "../pages/AdminOrdersPage";
+import AdminCouponsPage from "../pages/AdminCouponsPage";
+import AdminCouponDetailPage from "../pages/AdminCouponDetailPage";
 import AdminLayout from "@/components/admin/AdminLayout";
 import AdminRouteGuard from "@/components/admin/AdminRouteGuard";
 import { PATHS } from "./paths";
@@ -48,6 +50,14 @@ const routes = [
                     {
                         path: "orders",
                         element: <AdminOrdersPage />,
+                    },
+                    {
+                        path: "coupons",
+                        element: <AdminCouponsPage />,
+                    },
+                    {
+                        path: "coupons/:id",
+                        element: <AdminCouponDetailPage />,
                     },
                     {
                         path: "*",
