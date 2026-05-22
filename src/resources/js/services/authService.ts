@@ -11,9 +11,11 @@ type RegisterPayload = {
 type RegisterResponse = {
     message: string;
     user: {
+        id: number | string | null;
         email: string;
         username: string;
         phone: string | null;
+        role: string;
         created_at: string;
     };
     token: string;
@@ -29,9 +31,11 @@ type LoginPayload = {
 type LoginResponse = {
     message: string;
     user: {
+        id: number | string | null;
         email: string;
         username: string;
         phone: string | null;
+        role: string;
         created_at: string;
     };
     token: string;

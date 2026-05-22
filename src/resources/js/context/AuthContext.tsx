@@ -5,6 +5,7 @@ type AuthUser = {
     email: string;
     username: string;
     phone: string | null;
+    role: string;
     created_at: string;
 };
 
@@ -44,6 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
                     email: payload.email,
                     username: payload.username,
                     phone: payload.phone ?? null,
+                    role: payload.role ?? "user",
                     created_at: payload.created_at,
                 } as AuthUser;
 

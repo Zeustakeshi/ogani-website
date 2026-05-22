@@ -13,7 +13,13 @@ class AuthService
      */
     public function register(array $data): array
     {
-        $user = User::query()->create($data);
+        $user = User::query()->create([
+            'email' => $data['email'],
+            'username' => $data['username'],
+            'phone' => $data['phone'] ?? null,
+            'password' => $data['password'],
+            'role' => 'user',
+        ]);
 
         return [
             'user' => $user,
@@ -26,7 +32,12 @@ class AuthService
      */
     public function login(array $data): array
     {
-        $user = User::query()->where('email', $data['email'])->first();
+        $identifier = $data['email'];
+
+        $user = User::query()
+            ->where('email', $identifier)
+            ->orWhere('username', $identifier)
+            ->first();
 
         if (! $user || ! Hash::check($data['password'], $user->password)) {
             throw ValidationException::withMessages([

@@ -9,9 +9,19 @@ import CheckoutPage from "../pages/CheckoutPage";
 import LoginPage from "../pages/LoginPage";
 import Register from "../pages/RegisterPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
+import AdminLoginPage from "../pages/AdminLoginPage";
+import AdminDashboardPage from "../pages/AdminDashboardPage";
 import { PATHS } from "./paths";
 
 const routes = [
+    {
+        path: PATHS.ADMIN_LOGIN.replace(/^\//, ""),
+        element: <AdminLoginPage />,
+    },
+    {
+        path: PATHS.ADMIN.replace(/^\//, ""),
+        element: <AdminDashboardPage />,
+    },
     {
         path: "/",
         element: <Layout />,
