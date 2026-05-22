@@ -105,15 +105,15 @@ const Header: React.FC<HeaderProps> = () => {
                     <div className="col-lg-6">
                         <nav className="header__menu">
                             <ul>
-                                <li className="active">
+                                <li className="">
                                     <NavLink to="/" end>
-                                        Home
+                                        Trang chủ
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/shop">Shop</NavLink>
+                                    <NavLink to="/shop">Sản phẩm</NavLink>
                                 </li>
-                                <li>
+                                {/* <li>
                                     <a href="#">Pages</a>
                                     <ul className="header__menu__dropdown">
                                         <li>
@@ -141,7 +141,7 @@ const Header: React.FC<HeaderProps> = () => {
                                 </li>
                                 <li>
                                     <NavLink to="/contact">Contact</NavLink>
-                                </li>
+                                </li> */}
                             </ul>
                         </nav>
                     </div>

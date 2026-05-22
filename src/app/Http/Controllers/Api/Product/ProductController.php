@@ -19,9 +19,11 @@ class ProductController extends Controller
 
 	public function index(Request $request)
 	{
-		$perPage = max(1, (int) $request->integer('per_page', 12));
-		$categoryId = $request->string('category_id');
-		$search = $request->string('search');
+		$perPage = max(1, (int) $request->integer('per_page', $request->integer('limit', 12)));
+		$categoryId = $request->query('category_id');
+		$search = $request->query('search');
+		$sortBy = $request->query('sort_by');
+		$order = strtolower($request->query('order', 'desc')) === 'asc' ? 'asc' : 'desc';
 
 		$query = Product::query();
 
@@ -32,6 +34,22 @@ class ProductController extends Controller
 		if ($search) {
 			$query->where('name', 'like', "%{$search}%")
 				->orWhere('description', 'like', "%{$search}%");
+		}
+
+		$allowedSorts = ['rating', 'price', 'created_at', 'name'];
+		if ($sortBy && in_array($sortBy, $allowedSorts, true)) {
+			// Special-case rating: sort by rating desc, then reviews desc as tiebreaker
+			if ($sortBy === 'rating') {
+				if ($order === 'desc') {
+					$query->orderByDesc('rating')->orderByDesc('reviews');
+				} else {
+					$query->orderBy('rating', 'asc')->orderBy('reviews', 'asc');
+				}
+			} else {
+				$query->orderBy($sortBy, $order);
+			}
+		} else {
+			$query->latest();
 		}
 
 		return ProductResource::collection($query->paginate($perPage));

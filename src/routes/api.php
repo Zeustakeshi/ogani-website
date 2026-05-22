@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Cart\CartController;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -19,6 +20,11 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
+	Route::get('/cart', [CartController::class, 'index']);
+	Route::post('/cart/items', [CartController::class, 'store']);
+	Route::match(['put', 'patch'], '/cart/items/{product}', [CartController::class, 'update']);
+	Route::delete('/cart/items/{product}', [CartController::class, 'destroy']);
+
 	Route::middleware('admin')->group(function () {
 		Route::post('/categories', [CategoryController::class, 'store']);
 		Route::match(['put', 'patch'], '/categories/{category}', [CategoryController::class, 'update']);

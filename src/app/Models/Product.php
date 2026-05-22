@@ -21,6 +21,7 @@ class Product extends Model
 		'category_id',
 		'name',
 		'reviews',
+		'rating',
 		'price',
 		'description',
 		'is_availability',
@@ -30,6 +31,7 @@ class Product extends Model
 
 	protected $casts = [
 		'reviews' => 'integer',
+		'rating' => 'integer',
 		'price' => 'integer',
 		'is_availability' => 'boolean',
 		'weight' => 'float',
