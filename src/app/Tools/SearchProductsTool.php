@@ -63,22 +63,34 @@ class SearchProductsTool
                 $products = $query->limit($normalizedLimit)->get();
 
                 if ($products->isEmpty()) {
-                    return 'Không tìm thấy sản phẩm phù hợp với điều kiện hiện tại.';
+                    return json_encode([
+                        'summary' => 'Không tìm thấy sản phẩm phù hợp với điều kiện hiện tại.',
+                        'products' => [],
+                    ], JSON_UNESCAPED_UNICODE);
                 }
 
-                $lines = [];
-                foreach ($products as $product) {
-                    $lines[] = sprintf(
-                        '- %s | %s VNĐ | Tồn kho: %d | Danh mục: %s | ID: %s',
-                        $product->name,
-                        number_format((float) $product->price, 0, ',', '.'),
-                        (int) $product->inventory,
-                        (string) optional($product->category)->name ?: 'Chưa phân loại',
-                        (string) $product->id,
-                    );
-                }
+                $normalizedProducts = $products->map(function (Product $product): array {
+                    $image = data_get($product->images ?? [], '0') ?? '/img/product/product-1.jpg';
 
-                return "Danh sách sản phẩm gợi ý:\n" . implode("\n", $lines);
+                    if (is_string($image) && $image !== '' && ! str_starts_with($image, '/') && ! preg_match('/^https?:\/\//', $image) && ! str_starts_with($image, 'data:')) {
+                        $image = '/' . ltrim($image, '/');
+                    }
+
+                    return [
+                        'id' => (string) $product->id,
+                        'title' => (string) $product->name,
+                        'price' => number_format((float) $product->price, 0, ',', '.') . 'đ',
+                        'image' => is_string($image) && $image !== '' ? $image : '/img/product/product-1.jpg',
+                        'link' => '/product/' . $product->id,
+                        'onSale' => false,
+                        'oldPrice' => null,
+                    ];
+                })->values()->all();
+
+                return json_encode([
+                    'summary' => 'Danh sách sản phẩm gợi ý:',
+                    'products' => $normalizedProducts,
+                ], JSON_UNESCAPED_UNICODE);
             });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Tools\CreateMomoCheckoutTool;
 use App\Tools\GetActiveCouponsTool;
 use App\Tools\GetCategoryListTool;
 use App\Tools\GetOrderStatusTool;
@@ -33,6 +34,8 @@ class ChatbotService
             'Hãy trả lời bằng tiếng Việt tự nhiên, ngắn gọn, rõ ràng và hữu ích.',
             'Ưu tiên tư vấn sản phẩm, trạng thái đơn hàng, tồn kho và mua sắm.',
             'Bạn có thể dùng tool để tra cứu danh mục, gợi ý nhiều sản phẩm theo nhu cầu và kiểm tra coupon còn hạn.',
+            'Khi người dùng muốn xem chi tiết sản phẩm, hãy gọi tool `get_product_info` để trả về thông tin chính xác.',
+            'Khi người dùng muốn đặt hàng và họ đã cung cấp địa chỉ giao hàng, hãy gọi tool `create_momo_checkout` để tạo đơn và trả link thanh toán.',
             'Khi cần, hãy dùng tool để tra cứu dữ liệu chính xác thay vì đoán.',
             'Nếu không đủ dữ liệu, hãy nói rõ điều đó và đề nghị khách hàng cung cấp thêm thông tin.',
             'Không lặp lại yêu cầu "mã đơn" nhiều lần: nếu khách hàng không biết mã đơn, hãy hướng dẫn các lựa chọn thay thế (email, số điện thoại, tên tài khoản, thời gian mua).',
@@ -52,6 +55,7 @@ class ChatbotService
             (new SearchProductsTool())->toPrismTool(),
             (new GetCategoryListTool())->toPrismTool(),
             (new GetActiveCouponsTool())->toPrismTool(),
+            (new CreateMomoCheckoutTool())->toPrismTool(),
         ];
 
         try {
@@ -75,6 +79,7 @@ class ChatbotService
                 if ($event instanceof ToolResultEvent) {
                     $onChunk($this->formatStreamEvent('tool_result', [
                         'tool_name' => $event->toolResult->toolName,
+                        'tool_result' => $event->toolResult->result,
                     ]));
 
                     continue;

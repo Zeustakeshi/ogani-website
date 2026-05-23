@@ -209,6 +209,180 @@
     text-underline-offset: 2px;
 }
 
+.chatbot-widget__products {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.chatbot-widget__product {
+    flex: 0 0 238px;
+    min-width: 238px;
+    scroll-snap-align: start;
+}
+
+.chatbot-widget__product .product__item {
+    width: 100%;
+    margin-bottom: 0;
+    overflow: hidden;
+    border: 1px solid rgba(30, 30, 30, 0.08);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 10px 22px rgba(35, 35, 35, 0.06);
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.chatbot-widget__product .product__item__pic {
+    min-height: 142px;
+}
+
+.chatbot-widget__product .product__item__text {
+    padding: 12px 12px 14px;
+}
+
+.chatbot-widget__product .product__item__text h6 {
+    margin-bottom: 6px;
+    font-size: 0.97rem;
+}
+
+.chatbot-widget__product .product__item__text h5 {
+    margin-bottom: 10px;
+    font-size: 0.98rem;
+}
+
+.chatbot-widget__product .product__item__pic__hover {
+    display: none;
+}
+
+.chatbot-widget__product .sale__icon {
+    transform: scale(0.88);
+    transform-origin: top right;
+}
+
+.chatbot-widget__product .product__item__view {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+}
+
+.chatbot-widget__products::-webkit-scrollbar {
+    height: 8px;
+}
+
+.chatbot-widget__products::-webkit-scrollbar-track {
+    background: rgba(127, 173, 57, 0.08);
+    border-radius: 999px;
+}
+
+.chatbot-widget__products::-webkit-scrollbar-thumb {
+    background: rgba(127, 173, 57, 0.45);
+    border-radius: 999px;
+}
+
+.chatbot-widget__detail-card,
+.chatbot-widget__checkout-card {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid rgba(30, 30, 30, 0.1);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 22px rgba(35, 35, 35, 0.06);
+}
+
+.chatbot-widget__detail-media {
+    width: 100%;
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f3f4ee;
+}
+
+.chatbot-widget__detail-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.chatbot-widget__detail-body {
+    margin-top: 10px;
+}
+
+.chatbot-widget__detail-body h5,
+.chatbot-widget__checkout-card h5 {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    color: #1f1f1f;
+    font-weight: 700;
+}
+
+.chatbot-widget__detail-price {
+    margin: 0 0 8px;
+    color: #4e741f;
+    font-weight: 700;
+}
+
+.chatbot-widget__detail-desc {
+    margin: 0 0 10px;
+    color: #4b5563;
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.chatbot-widget__detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.chatbot-widget__detail-meta span {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: rgba(127, 173, 57, 0.12);
+    color: #365a14;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.chatbot-widget__checkout-card p {
+    margin: 0 0 6px;
+    color: #394150;
+    font-size: 0.9rem;
+}
+
+.chatbot-widget__action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 8px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    background: #f4f8ec;
+    color: #3f6220;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid rgba(127, 173, 57, 0.2);
+}
+
+.chatbot-widget__action-btn--pay {
+    background: #1f1f1f;
+    border-color: #1f1f1f;
+    color: #ffffff;
+}
+
 .chatbot-widget__composer {
     padding: 0 18px 18px;
     border-top: 1px solid rgba(30, 30, 30, 0.08);
@@ -304,6 +478,23 @@
     .chatbot-widget__composer {
         padding-left: 14px;
         padding-right: 14px;
+    }
+
+    .chatbot-widget__product .product__item__pic {
+        min-height: 124px;
+    }
+
+    .chatbot-widget__product .product__item {
+        width: 100%;
+    }
+
+    .chatbot-widget__product {
+        flex-basis: 212px;
+        min-width: 212px;
+    }
+
+    .chatbot-widget__detail-media {
+        height: 152px;
     }
 
     .chatbot-widget__input-row {

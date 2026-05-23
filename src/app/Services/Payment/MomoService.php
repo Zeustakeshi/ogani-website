@@ -163,6 +163,15 @@ class MomoService
 
         return [
             'orderId' => (string) $order->momo_order_id,
+            'order_id' => (int) $order->id,
+            'momo_order_id' => (string) $order->momo_order_id,
+            'status' => (string) $order->status,
+            'status_label' => $order->statusLabel(),
+            'total' => (int) $order->total,
+            'address' => (string) $order->address,
+            'note' => (string) ($order->note ?? ''),
+            'coupon_code' => (string) ($order->coupon_code ?? ''),
+            'items_count' => $items->count(),
             'payUrl' => $payUrl,
             'momoResponse' => $response,
         ];
