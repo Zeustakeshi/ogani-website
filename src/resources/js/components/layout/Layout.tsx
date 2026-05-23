@@ -8,6 +8,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Preloader from "../ui/Preloader";
 import HamburgerMenu from "../ui/HamburgerMenu";
 import { PATHS } from "@/router/paths";
+import ChatbotWidget from "@/components/ui/ChatbotWidget";
 
 export default function Layout() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -55,6 +56,8 @@ export default function Layout() {
             <main className="site-main">
                 <Outlet />
             </main>
+
+            <ChatbotWidget />
 
             <Footer />
         </>

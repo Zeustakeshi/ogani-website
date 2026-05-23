@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ProductReview\ProductReviewController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Coupon\CouponController;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\ChatbotController;
 use App\Http\Controllers\Api\Cart\CartController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Order\AdminOrderController;
@@ -26,6 +27,7 @@ Route::post('/coupons/validate', [CouponController::class, 'validateCoupon']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/products/{product}/reviews', [ProductReviewController::class, 'index']);
+Route::post('/chatbot/stream', [ChatbotController::class, 'stream']);
 
 Route::middleware('auth:sanctum')->group(function () {
 	Route::get('/cart', [CartController::class, 'index']);
